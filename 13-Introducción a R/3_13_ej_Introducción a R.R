@@ -1,6 +1,7 @@
 ################################################
 # Algortimos básicos para la descripción de datos en R
 ################################################
+#ejemplo de commit
 
 # 1.1 Obtener ayuda
 # 1.2 R como calculadora
