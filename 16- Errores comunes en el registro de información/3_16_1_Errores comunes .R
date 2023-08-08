@@ -14,6 +14,8 @@ library(readr)
 library(dplyr)
 #install.packages("janitor")
 library(janitor)
+#install.packages("usethis")
+library("usethis")
 
 
 gitcreds::gitcreds_set()
