@@ -17,8 +17,11 @@ library(janitor)
 #install.packages("usethis")
 library("usethis")
 
-
+#Verificar el ambiente de github en donde está trabajando
+usethis::git_sitrep()
+#Verificar la contresaña que debe se rigual a la de abajo
 gitcreds::gitcreds_set()
+#establecer el token o path que te da acceso al repositorio.
 credentials::set_github_pat("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")
 
 # Desde archivos separados por delimitador (como CSV)
