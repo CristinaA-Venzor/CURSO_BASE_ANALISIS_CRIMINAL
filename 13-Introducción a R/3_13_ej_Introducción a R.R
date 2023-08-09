@@ -193,7 +193,7 @@ summary(mtcars) # aporta datos estadisticos
 data(iris)
 
 
-## guarda este script con tus modificaciones donde exploraste la base de datos, como recultado de tu ejercicio.
+## guarda este script con tus modificaciones donde exploraste la base de datos, como resultado de tu ejercicio.
 ## compartélo a la siguiente liga: 
 #        https://forms.gle/MbMQJZdgDTuUHZXn7 
 
