@@ -114,7 +114,7 @@ municipio <- delitos1$municipio
 
 columnas_nuevas <- data.frame(numero_interno, edad_de_la_victima, municipio) # Con las columnas identificadas genero mi nuevo frame y el orden en que aparecen las columnas es conforme las coloque dentro de los parentesis
 
-# ORDENAR DATOS NUMERICOS
+# ORDENAR DATOS
  # NOTA: sort ordena los valores de mayor a menor, sin embargo si tengo mas columnas no conservara su complemento de fila
  # delitos1$edad_de_la_victima <- sort (delitos1$edad_de_la_victima, na.last = TRUE)
 
@@ -124,6 +124,9 @@ delito_mas <- delitos1[order(delitos1$edad_de_la_victima, na.last = TRUE), ]
 
 # Descendente
 delito_menos <- delitos1[order(-delitos1$edad_de_la_victima, na.last = TRUE), ]
+
+# Alfabetico
+delito_alfa <- delitos1[order(delitos1$municipio), ]
 
 # FILTRAR TABLA POR CIERTO DATO DENTRO DE LA COLUMNA ASI MISMO VISUALIZAR RANGOS
 # Un valor
