@@ -149,4 +149,16 @@ myPalette <- brewer.pal(7, "Set2")
 
 pie(prop$Freq , labels = c("Viernes","Lunes","Sábado","Domingo","Jueves", "Martes", "Miercoles"), border="white", col=myPalette )
 
+###### EJERCICIO
 
+#El ejercicio es lograr replicar la gráfica resultante del Script y contestar las siguientes preguntas:
+
+#1) ¿Quiénes son más frecuentemente víctimas de Robo a vehículo, hombres o mujeres?
+#2) Haga una gráfica de barras para contabilizar la edad de las víctimas. ¿En qué
+#edades es más frecuente la incidencia en Robo a vehículo?
+#3) ¿Qué sugiere la gráfica de pie en la distribución de ocurrencia del delito a
+#través de los días de la semana?
+#4) Realice una gráfica de pie por hora ¿Se sostiene esa inferencia cuando
+#analizamos los porcentajes por hora?
+#5) ¿Qué podemos decir acerca de la incidencia criminal de Robo a vehículo con
+#base en estas gráficas realizadas?
