@@ -60,6 +60,7 @@ library(sjlabelled) # Paquete para etiquetar variables
 library(tidyverse) # Metapaquete para Manipular datos (magrittr, dplyr, ggplot2, tidyr, purrr)
 #devtools::install_github("hadley/tidyverse")
 library(datasets) # Contiene Dataset "iris"
+library(janitor)
 
 ##########################################
 # 2.2 IMPORTAR Y EXPORTAR DATOS
@@ -131,14 +132,12 @@ write_csv(abc, "Edades.csv")  # Escribe en raíz
 # 2. Plantear dos preguntas
 # Deben ser sobre un subconjunto del universo de datos
 # Pueden usar cualquier vía para responder
-# 3. Obtener las medidas d etendnecia central de su estado para el año 2022 en hocmidios dolosos
+# 3. Obtener las medidas de tendnecia central de su estado
 # 3. Escribir código para responderlas
 ##########
 
-
-## guarda este script con tus modificaciones donde exploraste la base de datos, como recultado de tu ejercicio.
-## También es resultado de tu ejercicio la base de datos modificiada que exportaste
-## Sube un archivo de word con tus conclusiones del ejercicio
-## compartélo a la siguiente liga: 
+## Guarda este script con tus modificaciones donde exploraste la base de datos, como recultado de tu ejercicio.
+## También es resultado de tu ejercicio la base de datos modificiada que exportaste.
+## Sube un archivo de word con tus conclusiones del ejercicio.
+## Compartélo a la siguiente liga: 
 #        https://forms.gle/MdjKNikE5JzetfMQA 
-
