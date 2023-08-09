@@ -61,6 +61,8 @@ library(tidyverse) # Metapaquete para Manipular datos (magrittr, dplyr, ggplot2,
 #devtools::install_github("hadley/tidyverse")
 library(datasets) # Contiene Dataset "iris"
 library(ggplot2)
+library('data.table')
+library(janitor)
 
 ##########################################
 # 2.2 IMPORTAR Y EXPORTAR DATOS
@@ -104,7 +106,7 @@ unique (valores) # Muestro que valores pueden tomar los datos de mi variable
 
 # Sin ggplot --------------------------------------------------------------
 
-hist(valores) # Histograma a partir de las edades
+hist(b) # Histograma a partir de las edades
 
 boxplot(valores) # Diagrama de caja basada en los valores de los cuartiles
 
@@ -138,22 +140,45 @@ distribucion_acumulada <- ggplot() +
 
 ggsave(filename = "distribucion_acumulada.png", plot = distribucion_acumulada, width = 8, height = 6, dpi = 300)
 
+##############
+## INFORMACION DE LAS GRAFICAS DE FRECUENCIAS CON ELEMENTOS DEL TIPO CARACTER
+
+# Generar un data frame con las fecuencias de los valor que toma mi variable
+f1 <- table(delitos$sexo_de_la_victima) # Selecciono como variable sexo de la victima
+
+f2 <- as.data.frame(f1) %>%
+  rename(valor = Var1, frecuencia = Freq) # Genero el frame con los valores que toma sexo y sus frecuencias
+
+grafica_f2 <- f2[f2$valor %like% "^H|^M", ] # Hago una depuracion en cuanto a terminos especificos en este caso coloco 2 condiciones con ayuda de "|" (inicien con letra H o M)
+
+final <- grafica_f2 %>%
+  mutate(valor = ifelse(valor %in% c("Hombre", "HOMBRE"), "Hombre", valor)) %>%
+  group_by(valor) %>%
+  summarise(Frecuencia_Total = sum(frecuencia)) # Unifico los terminos Hombre y HOMBRE y sumo sus frecuencias
+
+final$valor[final$valor == "11"] <- "Mujer" # Modifico el valor 11 que no encaja por el valor correcto
+
+# Generacion del grafico
+grafico <- ggplot(final, aes(x = valor, y = Frecuencia_Total)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Gráfico de Frecuencias", x = "Valor", y = "Frecuencia") # Genero la grafica y en los valores de x coloca las opciones que puede tener sexo
+
+print(grafico)
+ggsave(filename = "grafico_sexo.png", plot = grafico, width = 8, height = 6, dpi = 300)
+
 ##########
 # Exportar las bases de datos modificadas
 write_csv(abc, "Edades.csv")  # Escribe en raíz
 
 ###################
 # 1. Observar las variables de la base de datos
-# 2. Plantear dos preguntas
-# Deben ser sobre un subconjunto del universo de datos
-# Pueden usar cualquier vía para responder
-# 3. Obtener las medidas d etendnecia central de su estado para el año 2022 en hocmidios dolosos
-# 3. Escribir código para responderlas
-##########
+# 2. Filtre la base de datos para un delito y un estado
+# 3. Realice por lo menos 3 visualizaciones de los datos con las que se puedan responder interrogantes
+# 4. Escribir código para generarlas
+###################
 
-
-## guarda este script con tus modificaciones donde exploraste la base de datos, como recultado de tu ejercicio.
-## También es resultado de tu ejercicio la base de datos modificiada que exportaste
-## Sube un archivo de word con tus conclusiones del ejercicio
-## compartélo a la siguiente liga: 
+## Guarda este script con tus modificaciones donde exploraste la base de datos, como recultado de tu ejercicio.
+## También es resultado de tu ejercicio la base de datos modificiada que exportaste.
+## Sube un archivo de word con tus conclusiones del ejercicio.
+## Compartélo a la siguiente liga: 
 #        https://forms.gle/MdjKNikE5JzetfMQA 
