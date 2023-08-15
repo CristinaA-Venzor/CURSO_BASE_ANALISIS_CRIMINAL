@@ -12,7 +12,7 @@
 
 # 2.2 Importar y exportar datos
 # https://www.uv.es/vcoll/importar-exportar.html # material extra
-# https://cran.r-project.org/doc/manuals/r-release/R-intro.html #Informacion sobre grafica y distribucion
+# https://cran.r-project.org/doc/manuals/r-release/R-intro.html # Informacion sobre grafica y distribucion
 
 ##################################
 # 2.1.1 LIMPIAR ESPACIO DE TRABAJO
@@ -76,7 +76,7 @@ data(iris)
 head(iris, n = 4)
 
 # Desde archivos separados por delimitador (como CSV)
-delitos <- read.csv("fresnillo.csv", check.names = F) # Al nombrar el archivo es necesario colocar toda la ruta o de lo contrario su nombre siempre y cuando este almacenado en la misma carpeta/directorio donde estoy trabajando
+delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv") # Al nombrar el archivo es necesario colocar toda la ruta o de lo contrario su nombre siempre y cuando este almacenado en la misma carpeta/directorio donde estoy trabajando
 
 View(delitos) # Me muestra mi base de datos
 
@@ -99,8 +99,8 @@ delitos <- clean_names(delitos) # Limpio los titulos de mis columnas para que su
 
 colnames(delitos) # Compruebo cambios
 
-colnames(delitos)[128] <- "formula_status" # Cambiar nombre de las columnas de forma manual colocando en los corchetes el numero de columna y en las comillas el nuevo titulo
-colnames(delitos)[118] <- "estado_actual_del_vehiculo"
+colnames(delitos)[1] <- "ano_hechos" # Cambiar nombre de las columnas de forma manual colocando en los corchetes el numero de columna y en las comillas el nuevo titulo
+colnames(delitos)[5] <- "ano_inicio"
 
 colnames(delitos) # Compruebo cambios
 
@@ -108,53 +108,52 @@ delitos1 = remove_empty(delitos, which = c("rows","cols")) # Elimina las columna
 
 # FILTRAR COLUMNAS
 
-numero_interno <- delitos1$numero_interno # Genero una identificacion para las columnas que voy a apartar
-edad_de_la_victima <- delitos1$edad_de_la_victima
-municipio <- delitos1$municipio
+delito <- delitos1$delito # Genero una identificacion para las columnas que voy a apartar
+categoria_delito <- delitos1$categoria_delito
 
-columnas_nuevas <- data.frame(numero_interno, edad_de_la_victima, municipio) # Con las columnas identificadas genero mi nuevo frame y el orden en que aparecen las columnas es conforme las coloque dentro de los parentesis
+columnas_nuevas <- data.frame(delito, categoria_delito) # Con las columnas identificadas genero mi nuevo frame y el orden en que aparecen las columnas es conforme las coloque dentro de los parentesis
 
 # ORDENAR DATOS
  # NOTA: sort ordena los valores de mayor a menor, sin embargo si tengo mas columnas no conservara su complemento de fila
  # delitos1$edad_de_la_victima <- sort (delitos1$edad_de_la_victima, na.last = TRUE)
 
-# Acendente
-delito_mas <- delitos1[order(delitos1$edad_de_la_victima, na.last = TRUE), ] 
+# Acendente en cuanto a la hora que suceden los hechos, asi sucede con numeros
+delito_mas <- delitos1[order(delitos1$hora_hechos, na.last = TRUE), ] 
  # NOTA: "na.last = TRUE" coloca los valores NA al final
 
-# Descendente
-delito_menos <- delitos1[order(-delitos1$edad_de_la_victima, na.last = TRUE), ]
+# Descendente (solo funciona con datos del tipo numerico)
+delito_menos <- delitos1[order(-delitos1$latitud, na.last = TRUE), ]
 
 # Alfabetico
-delito_alfa <- delitos1[order(delitos1$municipio), ]
+delito_alfa <- delitos1[order(delitos1$alcaldia_hechos), ]
 
 # FILTRAR TABLA POR CIERTO DATO DENTRO DE LA COLUMNA ASI MISMO VISUALIZAR RANGOS
 # Un valor
-col_centro <- subset(delitos1, colonia == "CENTRO") # subset(nombre_del_frame, nombre_de_la_columna == "valor")
-col_edad <- subset(delitos1, edad_de_la_victima < 50)
+col_febrero <- subset(delitos1, mes_inicio == "Febrero") # subset(nombre_del_frame, nombre_de_la_columna == "valor")
+col_hora <- subset(delitos1, hora_inicio < 20) # Solo valores antes de las 8 pm
 
 # Mas de uno (por medio de operadores logicos OR uno_u_otro "|" y AND ambos "&")
-col_centro_mas <- subset(delitos1, colonia == "CENTRO" | colonia == "ARBOLEDAS")
-col_edad_mas <- subset(delitos1, edad_de_la_victima < 50 & edad_de_la_victima > 40)
+col_febrero_mas <- subset(delitos1, mes_inicio == "Febrero" | mes_hechos == "Febrero")
+col_hora_mas <- subset(delitos1, hora_hechos < 22 & hora_hechos > 18)
 
-col_union <- subset(delitos1, colonia == "CENTRO" & (edad_de_la_victima < 50 | edad_de_la_victima > 60)) # Hacer el filtrado con diferentes columnas y tipos de datos
+col_union <- subset(delitos1, mes_hechos == "Febrero" & (hora_hechos < 22 & hora_hechos > 18)) # Hacer el filtrado con diferentes columnas y tipos de datos
 
-table(delitos1$ocupacion_de_la_victima)
+table(delitos1$alcaldia_hechos)
 
 # Generar un data frame con las fecuencias de los valor que toma mi variable
-f1 <- table(delitos$sexo_de_la_victima) # Selecciono como variable sexo de la victima
+f1 <- table(delitos$alcaldia_hechos) # Selecciono como variable alcaldia del suceso
 
 f2 <- as.data.frame(f1) %>%
-  rename(valor = Var1, frecuencia = Freq) # Genero el frame con los valores que toma sexo y sus frecuencias
+  rename(Alcaldia = Var1, Frecuencia = Freq) # Genero el frame con los valores que toma la alcaldia y sus frecuencias
 
-delitos1$sexo_de_la_victima[delitos1$sexo_de_la_victima == "Hombre"] <- "H"
+delitos1$alcaldia_hechos[delitos1$alcaldia_hechos == "GUSTAVO A. MADERO"] <- "GAM" # Modifico Gustavo A. Madero por GAM
 
 ###################
 # 1. Observar las variables de la base de datos
 # 2. Filtre la base de datos para un delito y un estado
 # 3. Realice por lo menos 2 nuevos frames con el filtrado
 # 4. Escribir código para generarlas
-##########
+###################
 
 ## Guarda este script con tus modificaciones donde exploraste la base de datos, como recultado de tu ejercicio.
 ## También es resultado de tu ejercicio la base de datos modificiada que exportaste.
