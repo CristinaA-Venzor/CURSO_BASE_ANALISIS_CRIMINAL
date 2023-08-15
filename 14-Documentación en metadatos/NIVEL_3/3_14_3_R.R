@@ -14,12 +14,10 @@ library(janitor)
 library(descr)
 library(pander)
 
-
-
 # Directorio debe ser sustituido por la ubicación del archivo con base en la computadora de cada usuario
 
-# Nombre.xlsx es la base de datos que se va a documentar
-df_base<-read_excel("3_zacatecas.xlsx")
+# Nombre.csv es la base de datos que se va a documentar (en este caso un vinculo)
+df_base<-read_excel("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
 
 # Ejecuto smart EDA para obtención de metadatos tipo 2
 tabla_final<-SmartEDA::ExpData(df_base,type=2)
@@ -42,7 +40,6 @@ flextable( tabla_final2) %>% save_as_docx( path = "metadatos_nivel3_tipo1.docx")
 #Descrago en Word
 flextable( tabla_final) %>% save_as_docx( path = "metadatos_nivel3_tipo2.docx")
 
-
 # Doy estilo a las dos tablas y las genero en mi viewer
 tabla_final<-flextable::flextable(tabla_final)
 tabla_final<-width(tabla_final, 2, width = 1)
@@ -51,4 +48,3 @@ tabla_final
 tabla_final2<-flextable::flextable(tabla_final2)
 tabla_final2<-width(tabla_final2, 2, width = 1)
 tabla_final2
-
