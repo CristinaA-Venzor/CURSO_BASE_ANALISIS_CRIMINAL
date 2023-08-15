@@ -36,13 +36,18 @@ library(datasets) # Contiene Dataset "iris"
 library(ggplot2)
 library('data.table')
 library(janitor)
+library(ggplot2)
+library(lubridate)
+library("RColorBrewer")
+library(dplyr)
+library("usethis")
 ```
 
 
 ```{r include=FALSE}
 # Este chop solo se corre y no se muestra en el documento
 
-delitos <- read.csv("zacateca_hora_limpia.csv", check.names = F) # Cargar base
+delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv") # Cargar base
 # Limpieza de datos
 delitos <- clean_names(delitos) # Escritura mas amigable en los titulos
 ```
@@ -65,94 +70,140 @@ Así como en la consola se nos muestra cierta información esta puede ser plasma
 colnames(delitos)
 ```
 
-### 2._ Información sobre genero de la victima
+### 2._ Tipos de grafica
 
-El primer ejercicio será a partir del genero de la victima donde se realizar la limpieza y filtrado de datos (lo cual no aparecera dentro del documento), para mas adelante generar la tabla de frecuencias y su grafica (se van a mostrar)
+**Histograma:** Un histograma es un gráfico que se utiliza para representar la distribución de frecuencias de datos de una variable. 
+
+**Grafico de densidad:** Un gráfico de densidad visualiza la distribución de datos cuantitativos en un intervalo continuo. Es una variación de un histograma que usa suavizado de _kernel_ para trazar valores, lo que permite distribuciones más suaves.
+
+**Grafica de caja:** Los diagramas de caja le permiten visualizar y comparar la distribución y la tendencia central de valores numéricos mediante sus cuartiles.
+
+**Grafica de pastel:** Un gráfico circular, diagrama sectorial o gráfica circular, también llamado gráfica de pizza, gráfico de tarta, nudo de globo, gráfico de torta, gráfico de quesitos o gráfica de 360 grados, es un recurso estadístico que se utiliza para representar porcentajes y proporciones.
+
+### 3._ Información sobre Violencia Familiar
+
+El primer ejercicio será a partir del tipo de delito "VIOLENCIA FAMILIAR" donde se realizara la limpieza y filtrado de datos (lo cual no aparecera dentro del documento), para mas adelante generar la tabla de frecuencias a partir del mes y sus graficas (se van a mostrar)
 
 #### Tabla con las frecuencias
 
 ```{r include=FALSE}
 # Este chop solo se corre y no se muestra en el documento
 
-# Generar un data frame con las fecuencias de mi variable
-f1 <- table(delitos$sexo_de_la_victima) # Aparto el sexo de la victima
+delitosv <- subset(delitos, delito == "VIOLENCIA FAMILIAR") 
 
-f2 <- as.data.frame(f1) %>%
-  rename(valor = Var1, frecuencia = Freq) # Genero el frame con sexo y sus frecuencias
+conservar <- c("fecha_hechos", "mes_hechos", "hora_hechos", "agencia", "alcaldia_hechos", "municipio_hechos", "latitud", "longitud") # Nos quedamos con las variables que son de nuestro interés para el análisis
 
-grafica_f2 <- f2[f2$valor %like% "^H|^M", ] # Hago una depuracion en cuanto a terminos especificos
+delitosv <-  delitosv[, conservar] # Genero la nueva tabla que contendra las columnas de interes solo con el delito de violencia familiar
 
-final <- grafica_f2 %>%
-  mutate(valor = ifelse(valor %in% c("Hombre", "HOMBRE"), "Hombre", valor)) %>%
-  group_by(valor) %>%
-  summarise(Frecuencia_Total = sum(frecuencia)) # Unifico los terminos y sumo frecuencias
+delitosv <- delitosv[!duplicated(delitosv[ ,c(1:8)]), ] # Borro valores duplicados
 
-final$valor[final$valor == "3"] <- "Mujer" # Modifico el valor 11
+mes_1 <- as.data.frame(table(delitosv$mes_hechos))
+mes_1 <- subset(mes_1, mes_1$Var1 == "Enero" | mes_1$Var1 == "Febrero" | mes_1$Var1 == "Marzo" | mes_1$Var1 == "Abril")
+
+# Genero mi grafico de tipo histograma
+mes_11 <- mes_1 %>%
+  ggplot( aes(x=Var1, y=Freq, fill= Var1)) +
+  geom_bar(stat="identity", alpha=.6, width=.4) +
+  scale_fill_manual(values=c("#3383FF", "#E992E6","#CC3300", "#AA9696"))+
+  ggtitle("Violencia Familiar por mes de los hechos") +
+  xlab(" ") + ylab("Frecuencia")+ labs(fill = "Mes")+
+  theme_classic()
+
+# Genero mi grafica de barras
+delitosv$fecha_hechos <- as.Date(delitosv$fecha_hechos, "%d/%m/%y") # pongo en formato fecha
+
+delitosv$dia <- format(delitosv$fecha_hechos,"%A") # extraigo día
+delitosv$año <- format(delitosv$fecha_hechos,"%Y") # extraigo año
+delitosv$mes <- format(delitosv$fecha_hechos,"%b") # extraigo mes
+
+prop <- as.data.frame(table(delitosv$dia)) # cuento incidencia por día
+
+myPalette <- brewer.pal(7, "Set2") #cambio de color con paleta de paquetería
 ```
 
 ```{r echo=FALSE}
 # Este chop solo se muestra en el documento
 
-final
+mes_1
 ```
 
-#### Grafico de barras con las frecuencias
-
-```{r echo=FALSE}
-# Este chop se muestra en el documento
-
-# Generacion del grafico
-grafico <- ggplot(final, aes(x = valor, y = Frecuencia_Total)) +
-  geom_bar(stat = "identity", fill = "skyblue") +
-  labs(title = "Gráfico de Frecuencias", x = "Valor", y = "Frecuencia")
-
-grafico
-```
-
-### 3._ Información sobre la edad de la victima
-
-En este segundo ejercicio, se estudiará la edad de la víctima.
-
-```{r include=FALSE}
-# Este chop solo se corre y no se muestra en el documento
-
-a <- delitos$edad_de_la_victima # Guardamos la edad de la victima
-is.numeric(a) # Verificamos que los datos sean del tipo numerico
-a <- as.numeric(a) # Pasamos nuestros datos al tipo numerico
-a <- na.omit(a) # Omitimos todos los valores nulos
-
-abc <- data.frame (y=a[a<100]) # Hago un nuevo frame de edades filtrando edad mayor a 100
-valores <- abc$y # Genero mi variable donde estaran contenidos los valores
-is.numeric(valores)
-```
-
-#### Histograma junto la gráfica de densidad usando frecuencias relativas
-
-**Histograma:** Un histograma es un gráfico que se utiliza para representar la distribución de frecuencias de datos de una variable. 
-
-**Grafico de densidad:** Un gráfico de densidad visualiza la distribución de datos cuantitativos en un intervalo continuo. Es una variación de un histograma que usa suavizado de _kernel_ para trazar valores, lo que permite distribuciones más suaves.
+#### Grafico de tipo histograma
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Este chop se muestra en el documento
 
-# Histograma junto la grafica de densidad usando frecuencias relativas
-histograma_densidad <- ggplot() +
-  aes(valores) +
-  geom_histogram(aes(y=..density..), position = "identity", alpha=0.5) + # Añado un histograma
-  geom_density(alpha=0.6) + # Añado un grafico de densidad
-  labs(title = "Grafica de densidad", x = "Edades", y = "Porcentaje") # Coloco titulos
-
-histograma_densidad
+mes_11
 ```
 
-#### Grafica de caja
+#### Grafico de pastel con el dia de la semana
 
-Los diagramas de caja le permiten visualizar y comparar la distribución y la tendencia central de valores numéricos mediante sus cuartiles.
-
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Este chop se muestra en el documento
 
-boxplot(valores) # Diagrama de caja
+mes_12 <- pie(prop$Freq , labels = c("Viernes","Lunes","Sábado","Domingo","Jueves", "Martes", "Miercoles"), border="white", col=myPalette, main = "Grafico de pastel Violencia Familiar")
+```
+
+### 4._ Información sobre Robo de Objetos
+
+El primer ejercicio será a partir del tipo de delito "ROBO DE OBJETOS" donde se realizara la limpieza y filtrado de datos (lo cual no aparecera dentro del documento), para mas adelante generar la tabla de frecuencias a partir del mes y sus graficas (se van a mostrar)
+
+#### Tabla con las frecuencias
+
+```{r include=FALSE}
+# Este chop solo se corre y no se muestra en el documento
+
+delitosr <- subset(delitos, delito == "ROBO DE OBJETOS") 
+
+conservar <- c("fecha_hechos", "mes_hechos", "hora_hechos", "agencia", "alcaldia_hechos", "municipio_hechos", "latitud", "longitud") # Nos quedamos con las variables que son de nuestro interés para el análisis
+
+delitosr <-  delitosr[, conservar] # Genero la nueva tabla que contendra las columnas de interes solo con el delito de violencia familiar
+
+delitosr <- delitosr[!duplicated(delitosr[ ,c(1:8)]), ] # Borro valores duplicados
+
+mes_2 <- as.data.frame(table(delitosr$mes_hechos))
+mes_2 <- subset(mes_1, mes_1$Var1 == "Enero" | mes_1$Var1 == "Febrero" | mes_1$Var1 == "Marzo" | mes_1$Var1 == "Abril")
+
+# Genero mi grafico de tipo histograma
+mes_21 <- mes_2 %>%
+  ggplot( aes(x=Var1, y=Freq, fill= Var1)) +
+  geom_bar(stat="identity", alpha=.6, width=.4) +
+  scale_fill_manual(values=c("#3383FF", "#E992E6","#CC3300", "#AA9696"))+
+  ggtitle("Robo de Objetos por mes de los hechos") +
+  xlab(" ") + ylab("Frecuencia")+ labs(fill = "Mes")+
+  theme_classic()
+
+# Genero mi grafica de barras
+delitosr$fecha_hechos <- as.Date(delitosr$fecha_hechos, "%d/%m/%y") # pongo en formato fecha
+
+delitosr$dia <- format(delitosr$fecha_hechos,"%A") # extraigo día
+delitosr$año <- format(delitosr$fecha_hechos,"%Y") # extraigo año
+delitosr$mes <- format(delitosr$fecha_hechos,"%b") # extraigo mes
+
+prop <- as.data.frame(table(delitosr$dia)) # cuento incidencia por día
+
+myPalette <- brewer.pal(7, "Set2") #cambio de color con paleta de paquetería
+```
+
+```{r echo=FALSE}
+# Este chop solo se muestra en el documento
+
+mes_2
+```
+
+#### Grafico de tipo histograma
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Este chop se muestra en el documento
+
+mes_21
+```
+
+#### Grafico de pastel con el dia de la semana
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Este chop se muestra en el documento
+
+mes_22 <- pie(prop$Freq , labels = c("Viernes","Lunes","Sábado","Domingo","Jueves", "Martes", "Miercoles"), border="white", col=myPalette, main = "Grafico de pastel Robo de Objetos")
 ```
 
 # EJERCICIO

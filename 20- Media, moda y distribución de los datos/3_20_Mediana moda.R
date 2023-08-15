@@ -71,7 +71,7 @@ data(iris)
 head(iris, n = 4)
 
 # Desde archivos separados por delimitador (como CSV)
-delitos <- read.csv("zacatecas.csv", check.names = F) # Al nombrar el archivo es necesario colocar toda la ruta o de lo contrario su nombre siempre y cuando este almacenado en la misma carpeta/directorio donde estoy trabajando
+delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv") # Al nombrar el archivo es necesario colocar toda la ruta o de lo contrario su nombre siempre y cuando este almacenado en la misma carpeta/directorio donde estoy trabajando
 
 View(delitos) # Me muestra mi base de datos
 
@@ -89,12 +89,19 @@ str(delitos) # Estructura de los delitos
 # Limpieza de datos
 delitos <- clean_names(delitos) # Limpio los titulos de mis columnas para que su escritura sea mas amigable con el texto
 
-a <- delitos$edad_de_la_victima # Guardamos la columna de la edad de la victima
+data("mtcars")
+Carritos <- as.data.frame(mtcars)
+
+?mtcars
+
+Carritos <- Carritos %>% rename(millas_por_galon = mpg, cilindros = cyl, desplazamiento = disp, potencia = hp, relacion_eje = drat, peso = wt, velocidad = qsec, motor = vs, transmicion = am, n_velocidades = gear, n_carburadores = carb)
+
+a <- Carritos$potencia # Guardamos la columna de la potencia de un auto
 is.numeric(a) # Verificamos que los datos sean del tipo numerico para poder trabajarlo en las medidas de tendencia central
 a <- as.numeric(a) # Pasamos nuestros datos al tipo numerico
 a <- na.omit(a) # Omitimos todos los valores nulos que estan guardados dentro de mi variable
 
-abc <- data.frame (y=a[a<100]) # Genero un nuevo frame con las edades donde por mera logica elimino los valores que no tendrian sentido en este caso edades mayorea a 100
+abc <- data.frame (y=a[a>0]) # Genero un nuevo frame con las edades donde por mera logica elimino los valores que no tendrian sentido en este caso edades mayorea a 100
 valores <- abc$y # Genero mi variable donde estaran contenidos los valores ya limpios
 is.numeric(valores)
 
@@ -124,21 +131,19 @@ summary (valores) # Me muestra valores estadosticos (minimo, primer cuartil, med
 
 ##########
 # Exportar las bases de datos modificadas
-write_csv(abc, "Edades.csv")  # Escribe en raíz
+write_csv(abc, "Potencia.csv")  # Escribe en raíz
 
 ###################
 # 1. Observar las variables de la base de datos
 # 2. Plantear dos preguntas
 # Deben ser sobre un subconjunto del universo de datos
 # Pueden usar cualquier vía para responder
-# 3. Obtener las medidas d etendnecia central de su estado para el año 2022 en hocmidios dolosos
+# 3. Obtener las medidas de tendnecia central de su estado o en su defecto de la tabla muestra
 # 3. Escribir código para responderlas
 ##########
-
 
 ## guarda este script con tus modificaciones donde exploraste la base de datos, como recultado de tu ejercicio.
 ## También es resultado de tu ejercicio la base de datos modificiada que exportaste
 ## Sube un archivo de word con tus conclusiones del ejercicio
 ## compartélo a la siguiente liga: 
-#        https://forms.gle/MdjKNikE5JzetfMQA 
-
+#        https://forms.gle/QAzaEccj6CLNqYfn6 

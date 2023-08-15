@@ -25,7 +25,7 @@ ls() # visualizar lista los objetos que hay en RAM
 getwd() # Pregunto directorio de trabajo
 # Ejemplo
 # setwd("/Users/cristinTOR/CURSO/Sesiones presenciales R") # Cambio directorio de trabajo en una carpeta dentro de mi unidad
-setwd("C:/Users/jhazi/Desktop/Primera_practicas/mis_scrips") # Dentro de los parentesis indico mi directorio/carpeta a trabaja si quiero cambiar
+setwd() # Dentro de los parentesis indico mi directorio/carpeta a trabaja si quiero cambiar
 getwd() # Vuelvo a preguntar cuál es el directorio de trabajo
 list.files(getwd()) # Qué archivos contiene mi directorio de trabajo
 # Establecer rutas alternativas para proyectos más ordenados
