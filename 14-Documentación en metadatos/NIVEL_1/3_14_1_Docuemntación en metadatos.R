@@ -18,7 +18,7 @@ library(descr)
 library(pander)
 library("usethis")
 
-# Nombre.xlsx es la base de datos que se va a documentar (en este caso un vinculo terminacion.csv)
+# Nombre.xlsx es la base de datos que se va a documentar (en este caso un vinculo terminacion .csv)
 df_base<-read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
 
 # Ejcutamos la creación de meta datos (informacion basica por variable)
