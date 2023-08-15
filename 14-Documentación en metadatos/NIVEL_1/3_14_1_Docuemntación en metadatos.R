@@ -25,7 +25,7 @@ df_base<-read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE
 tabla_final<-SmartEDA::ExpData(df_base,type=2)
 
 # Cambio lo valores de las gráficas
-colnames(tabla_final)<-c("No.","Nombre de variable", "Tipo de datos", "Número de registros", "Valores faltantes", "Porcentaje de valores faltantes", "Número de valores distintos")
+colnames(tabla_final)<-c("No.", "Nombre de variable", "Tipo de datos", "Número de registros", "Valores faltantes", "Porcentaje de valores faltantes", "Número de valores distintos")
 
 # Exporto en documento de word
 flextable(tabla_final) %>% save_as_docx( path = "metadatos_nivel_1.docx") # Se guarda en la carpeta de trabajo "getwd()"
