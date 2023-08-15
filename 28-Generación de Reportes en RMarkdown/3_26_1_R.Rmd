@@ -29,7 +29,6 @@ library(tidyr)
 library(hms)
 ```
 
-
 # Introducción
 
 R markdown es un lenguaje de texto sencillo y fácil de usar que se utiliza para combinar el código R, los resultados del análisis de datos (incluidos gráficos y tablas) y comentarios escritos en un único documento con un formato agradable y reproducible (como un informe, una publicación, un capítulo de tesis o una página web).
@@ -73,42 +72,42 @@ Nombre del archivo:
 # Directorio debe ser sustituido por la ubicación del archivo con base en la computadora de cada usuario
 
 # Nombre.xlsx es la base de datos que se va a documentar
-delitos<-read_csv("2_fresnillo.csv")
+delitos<-read_csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
 
 # 1.- limpieza y filtración de datos
 
 # Nos quedamos con sólo un delito: 
 
-delitos <- subset(delitos, Delito = "ROBO A VEHICULO") 
+delitos <- subset(delitos, delito = "AMENAZAS") 
 
 # Nos quedamos con las variables que son de nuestro interés para el análisis
-conservar <- c("Número de CUI", "Fecha del delito","Hora del delito","Estado", "Municipio" , "Latitud" , "Longitud", "Sexo de la Víctima", "Edad de la víctima" )
+conservar <- c("fecha_hechos", "mes_hechos", "hora_hechos", "agencia", "alcaldia_hechos", "municipio_hechos", "latitud", "longitud")
   
 delitos <-  delitos[conservar]
 
-# elimino los  CUIs repetidos
-delitos <- unique(delitos, by = "Número de CUI")
+# elimino los repetidos
+delitos <- delitos[!duplicated(delitos[ ,c(1:8)]), ]
 
 #tablas de frecuencias por horas y fechas
 
 #pongo en formato fecha
-delitos$`Fecha del delito` <- as.Date(delitos$`Fecha del delito`, "%d/%m/%y")
+delitos$fecha_hechos <- as.Date(delitos$fecha_hechos, "%d/%m/%y")
 #pongo en formato hora
 #delitos$`Hora del delito` <- hms(delitos$`Hora del delito`)
 
 #extraigo hora
-delitos$hora <- hour(delitos$`Hora del delito`)
+delitos$hora <- hour(delitos$hora_hechos)
 #extraigo día
-delitos$dia <- format(delitos$`Fecha del delito`,"%A")
+delitos$dia <- format(delitos$fecha_hechos,"%A")
 #extraigo año
-delitos$año <- format(delitos$`Fecha del delito`,"%Y")
+delitos$año <- format(delitos$fecha_hechos,"%Y")
 #extraigo mes
-delitos$mes <- format(delitos$`Fecha del delito`,"%b")
+delitos$mes <- format(delitos$fecha_hechos,"%b")
 
 #extraigo datos meximos, minimos y totales
 año <- names(which.max(table(delitos$año)))
-max <- max(delitos$`Fecha del delito`)
-min <-  min(delitos$`Fecha del delito`)
+max <- max(delitos$fecha_hechos)
+min <-  min(delitos$fecha_hechos)
 total <- dim(delitos)
 
 #limpieza automática de nombre de variables
@@ -122,13 +121,12 @@ colnames(tabla_final)<-c("No.","Nombre de variable", "Tipo de datos", "Número d
 tabla_final<-flextable::flextable(tabla_final)
 #tabla_final<-width(tabla_final, 1, width = 0.3)
 #tabla_final<-width(tabla_final, 2, width = 1)
-
-
 ```
 
 ```{r echo=FALSE}
 tabla_final
 ```
+
 La fase inicial de Análisis Exploratorio de Datos (EDA por las siglas en inglés) es crucial para obtener mejores resultados en las fases posteriores del análisis de datos.
 
 Las estimaciones del tiempo dedicado a EDA y a la preparación de datos oscilan entre el 60 y el 80% del tiempo total dedicado a un proyecto de Análisis de Datos.
@@ -148,5 +146,3 @@ La tabla resume cada característica del conjunto de datos, incluido el tipo de 
 Completa los campos vacios de este reporte.
 
 Describe la base datos con base en lo que conocemos hasta ahora
-
-
