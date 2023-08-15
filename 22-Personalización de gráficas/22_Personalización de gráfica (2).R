@@ -2,7 +2,7 @@
 # Gráficas con ggplot
 ############################################
 
-######Temas
+###### Temas
 
 # 1.- limpieza y filtración de datos
 # 2.- grafica de barras simples
@@ -20,48 +20,53 @@ library(ggplot)
 library(tidyverse)
 library(lubridate)
 library("RColorBrewer")
+library(dplyr)
+library(janitor)
+library("usethis")
+library(datasets)
 
 # cargo bases de datos
 rm(list=ls()) # Limpiar
 #EJEMPLO
 ##setwd("/Users/cristinaalvarez/SynologyDrive/CONSULTORÍA/NESTOR/CURSO/zacatecas")  # Directorio
 # Desde archivos separados por delimitador (como CSV)
-delitos <- read.csv("2_zacatecas.csv", check.names = F)
+delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
 
 # 1.- limpieza y filtración de datos
 
 # Nos quedamos con sólo un delito: 
 
-delitos <- subset(delitos, Delito = "ROBO A VEHICULO") 
+delitos <- subset(delitos, delito == "VIOLENCIA FAMILIAR") 
 
-# Nos quedamos con las variables que son de nuestro interés para el análisis
-conservar <- c("Número de CUI", "Fecha del delito","Hora del delito","Estado", "Municipio" , "Latitud" , "Longitud", "Sexo de la Víctima", "Edad de la víctima" )
+table(delitos$delito)
+
+ # Nos quedamos con las variables que son de nuestro interés para el análisis
+conservar <- c("fecha_hechos", "mes_hechos", "hora_hechos", "agencia", "alcaldia_hechos", "municipio_hechos", "latitud", "longitud")
   
-delitos <-  delitos[, conservar]
+delitos <-  delitos[, conservar] # Genero la nueva tabla que contendra las columnas de interes solo con el delito de violencia familiar
 
-# elimino los  CUIs repetidos
-dim(delitos)
-delitos <- unique(delitos, by = "Número de CUI")
+# elimino las filas repetidos
 dim(delitos)
 
+# Borro valores duplicados cuando concuerdan en las columnas dentro de c
+delitos <- delitos[!duplicated(delitos[ ,c(1:8)]), ]  # Delete rows
+dim(delitos)
 
 ## Gráficas con paquetería ggplot
 ## material de consulta
 # https://r-graph-gallery.com/index.html
 
+#frecuencia por mes del suceso
 
-#frecuencia por sexo de la victima
-
-sexo <- as.data.frame(table(delitos$`Sexo de la Víctima`))
-View(sexo)
-sexo <- subset(sexo, sexo$Var1 == "Hombre" | sexo$Var1 == "Mujer")
-
+mes_1 <- as.data.frame(table(delitos$mes_hechos))
+View(mes_1)
+mes_1 <- subset(mes_1, mes_1$Var1 == "Enero" | mes_1$Var1 == "Febrero" | mes_1$Var1 == "Marzo" | mes_1$Var1 == "Abril")
 
 # 2.- grafica de barras simples
 # Nota: seleccione todos los comandos juntos para correrlos, aunque estén en distintas líneas
 # para su visualización, se tienen que correr en conjunto.
 
-sexo %>%
+mes_1 %>%
   ggplot( aes(x=Var1, y=Freq)) +
   geom_bar(stat="identity",)+
   theme_bw()
@@ -69,71 +74,69 @@ sexo %>%
 ## 3.- modificació de características de gráficos
 #     3.1.- color
 
-sexo %>%
+mes_1 %>%
   ggplot( aes(x=Var1, y=Freq, fill= Var1)) +
   geom_bar(stat="identity", alpha=.6, width=.4) +
-  scale_fill_manual(values=c("#3383FF", "#E392E6"))+
+  scale_fill_manual(values=c("#3383FF", "#E992E6","#CC3300", "#AA9696"))+
   theme_bw()
 
 #     3.2.- título general
 
-sexo %>%
+mes_1 %>%
   ggplot( aes(x=Var1, y=Freq, fill= Var1)) +
   geom_bar(stat="identity", alpha=.6, width=.4) +
-  scale_fill_manual(values=c("#3383FF", "#E392E6"))+
-  ggtitle("Robo a vehículo por sexo de la víctima") +
+  scale_fill_manual(values=c("#3383FF", "#E992E6","#CC3300", "#AA9696"))+
+  ggtitle("Violencia Familiar por mes de los hechos") +
   theme_bw()
 
 #     3.3.- título de ejes
 
-sexo %>%
+mes_1 %>%
   ggplot( aes(x=Var1, y=Freq, fill= Var1)) +
   geom_bar(stat="identity", alpha=.6, width=.4) +
-  scale_fill_manual(values=c("#3383FF", "#E392E6"))+
-  ggtitle("Robo a vehículo por sexo de la víctima") +
-  xlab(" ") + ylab("Frecuencia")+ labs(fill = "Sexo")+
+  scale_fill_manual(values=c("#3383FF", "#E992E6","#CC3300", "#AA9696"))+
+  ggtitle("Violencia Familiar por mes de los hechos") +
+  xlab(" ") + ylab("Frecuencia")+ labs(fill = "Mes")+
   theme_bw()
 
 #     3.4.- estilos
 
-sexo %>%
+mes_1 %>%
   ggplot( aes(x=Var1, y=Freq, fill= Var1)) +
   geom_bar(stat="identity", alpha=.6, width=.4) +
-  scale_fill_manual(values=c("#3383FF", "#E392E6"))+
-  ggtitle("Robo a vehículo por sexo de la víctima") +
-  xlab(" ") + ylab("Frecuencia")+ labs(fill = "Sexo")+
+  scale_fill_manual(values=c("#3383FF", "#E992E6","#CC3300", "#AA9696"))+
+  ggtitle("Violencia Familiar por mes de los hechos") +
+  xlab(" ") + ylab("Frecuencia")+ labs(fill = "Mes")+
   theme_classic()
-
 
 #     3.4.- estilos, voltear sentido del gráfico
 
-sexo %>%
+mes_1 %>%
   ggplot( aes(x=Var1, y=Freq, fill= Var1)) +
   geom_bar(stat="identity", alpha=.6, width=.4) +
-  scale_fill_manual(values=c("#3383FF", "#E392E6"))+
+  scale_fill_manual(values=c("#3383FF", "#E992E6","#CC3300", "#AA9696"))+
   coord_flip() +
-  ggtitle("Robo a vehículo por sexo de la víctima") +
+  ggtitle("Violencia Familiar por mes de los hechos") +
   xlab(" ") + ylab("Frecuencia")+ labs(fill = "Sexo")+
   theme_classic()
-
 
 ## 4.- gráficas de pie
 
 #Traemos el pedacito de código en donde limpiamos la fecha y hora
 
 #pongo en formato fecha
-delitos$`Fecha del delito` <- as.Date(delitos$`Fecha del delito`, "%d/%m/%y")
+delitos$fecha_hechos <- as.Date(delitos$fecha_hechos, "%d/%m/%y")
 #pongo en formato hora
-delitos$`Hora del delito` <- hms(delitos$`Hora del delito`)
+delitos$hora_hechos <- hms(delitos$hora_hechos)
 
 #extraigo hora
-delitos$hora <- hour(delitos$`Hora del delito`)
+delitos$hora <- hour(delitos$hora_hechos)
 #extraigo día
-delitos$dia <- format(delitos$`Fecha del delito`,"%A")
+delitos$dia <- format(delitos$fecha_hechos,"%A")
 #extraigo año
-delitos$año <- format(delitos$`Fecha del delito`,"%Y")
+delitos$año <- format(delitos$fecha_hechos,"%Y")
 #extraigo mes
-delitos$mes <- format(delitos$`Fecha del delito`,"%b")
+delitos$mes <- format(delitos$fecha_hechos,"%b")
 
 #cuento incidncia por día
 prop <- as.data.frame(table(delitos$dia))
@@ -153,12 +156,8 @@ pie(prop$Freq , labels = c("Viernes","Lunes","Sábado","Domingo","Jueves", "Mart
 
 #El ejercicio es lograr replicar la gráfica resultante del Script y contestar las siguientes preguntas:
 
-#1) ¿Quiénes son más frecuentemente víctimas de Robo a vehículo, hombres o mujeres?
-#2) Haga una gráfica de barras para contabilizar la edad de las víctimas. ¿En qué
-#edades es más frecuente la incidencia en Robo a vehículo?
-#3) ¿Qué sugiere la gráfica de pie en la distribución de ocurrencia del delito a
-#través de los días de la semana?
-#4) Realice una gráfica de pie por hora ¿Se sostiene esa inferencia cuando
-#analizamos los porcentajes por hora?
-#5) ¿Qué podemos decir acerca de la incidencia criminal de Robo a vehículo con
-#base en estas gráficas realizadas?
+#1) ¿Cual mes hay más frecuentemente víctimas de Violencia Familiar?
+#2) Haga una gráfica de barras para contabilizar el mes de los casos. ¿En qué mes es más frecuente la incidencia en Violencia Familiar?
+#3) ¿Qué sugiere la gráfica de pie en la distribución de ocurrencia del delito a través de los días de la semana?
+#4) Realice una gráfica de pie por hora ¿Se sostiene esa inferencia cuando analizamos los porcentajes por hora?
+#5) ¿Qué podemos decir acerca de la incidencia criminal de Violencia Familiar con base en estas gráficas realizadas?
