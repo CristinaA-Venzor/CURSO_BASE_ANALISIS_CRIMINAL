@@ -146,4 +146,4 @@ write_csv(abc, "Potencia.csv")  # Escribe en raíz
 ## También es resultado de tu ejercicio la base de datos modificiada que exportaste
 ## Sube un archivo de word con tus conclusiones del ejercicio
 ## compartélo a la siguiente liga: 
-#        https://forms.gle/MdjKNikE5JzetfMQA 
+#        https://forms.gle/QAzaEccj6CLNqYfn6 
