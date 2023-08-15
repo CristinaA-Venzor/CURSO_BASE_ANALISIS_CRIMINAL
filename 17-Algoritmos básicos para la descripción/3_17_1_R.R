@@ -18,65 +18,70 @@ library(tidyr)
 library(tidyverse)
 library(lubridate)
 library("RColorBrewer")
+library(ggplot2)
+library(magrittr)
 
 #############
 rm(list=ls()) # Limpiar
-setwd("/Users/cristinaalvarez/SynologyDrive/CONSULTORÍA/NESTOR/CURSO/zacatecas")  # Directorio
+# setwd("")  # Directorio a trabajar
 # Desde archivos separados por delimitador (como CSV)
-delitos <- read.csv("fresnillo.csv", check.names = F)
+delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
 
 # Exploración de base de datos
 
-#primeras entradas
+# primeras entradas
 head(delitos)
 
-#
+# dimension columnas-filas
 dim(delitos)
 
-# dejo mi base con las primeras columnas
-delitos <- delitos[, 1:25]
+# dejo mi base con las primeras 10 columnas
+delitos <- delitos[, 1:10]
 
 #tablas de frecuencias por horas y fechas
 
 #pongo en formato fecha
-delitos$`Fecha del delito` <- as.Date(delitos$`Fecha del delito`, "%d/%m/%y")
+delitos$fecha_hechos <- as.Date(delitos$fecha_hechos, "%d/%m/%y")
 #pongo en formato hora
-delitos$`Hora del delito` <- hms(delitos$`Hora del delito`)
+delitos$hora_hechos <- hms(delitos$hora_hechos)
 
 #extraigo hora
-delitos$hora <- hour(delitos$`Hora del delito`)
-#extraigo día
-delitos$dia <- format(delitos$`Fecha del delito`,"%A")
+delitos$hora <- hour(delitos$hora_hechos)
+#extraigo día de la semana
+delitos$dia <- format(delitos$fecha_hechos,"%A")
 #extraigo año
-delitos$año <- format(delitos$`Fecha del delito`,"%Y")
+delitos$año <- format(delitos$fecha_hechos,"%Y")
 #extraigo mes
-delitos$mes <- format(delitos$`Fecha del delito`,"%b")
+delitos$mes <- format(delitos$fecha_hechos,"%b")
 
 #extraigo datos máximos, mínimos y totales
-año <- names(which.max(table(delitos$año)))
-max <- max(delitos$`Fecha del delito`)
-min <-  min(delitos$`Fecha del delito`)
+año <- names(which.max(table(delitos$año))) # Año maximo
+max <- max(delitos$fecha_hechos) # Fecha maxima
+min <-  min(delitos$fecha_hechos) # Fecha minima
 total <- dim(delitos)
-
 
 #grafico para visualizar las frecuencias
 
 #tabulo por mes
 fremes <- t(as.matrix(table(delitos$mes)))
-#Me quedo con los que sí idenitifica un mes
-fremes <- fremes[, c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov" , "Dec")]
+#Me quedo con los que sí idenitifica un mes en caso de estar en ingles
+# fremes <- fremes[, c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov" , "Dec")]
 #convierto la tabla a base de datos (data frame)
 fremes <- as.data.frame(fremes)
-#cambio nombre de meses a español
-fremes$mes <- c("ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic")
+#cambio nombre de meses a español en caso de ser necesario
+# fremes$mes <- c("ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic")
 
-#realizo gráfica con argumentos de R
-my_bar <- barplot(height=fremes$fremes, names.arg =fremes$mes, 
-                  col=rgb(0.8,0.1,0.1,0.6), axes = FALSE,
-                  xlab="mes", 
-                  main="Delitos en Fresnillo por mes", las=2, 
-                  cex.axis=1, cex.names=.9) 
-text(my_bar, fremes$fremes - 6, labels = fremes$fremes)
+# Ordeno los meses de acuerdo al calendario
+fremes <- fremes %>% select(ene., feb., mar., abr.)
 
+fremes_uso <- t(fremes) # Giro la grafica para pasar las columnas a filas y viceversa
+fremes_uso <- as.data.frame(fremes_uso) # Convierto a data frame
 
+barra_frame <- tibble::rownames_to_column(fremes_uso, "Mes") # La columna de orden tiene los meses y convierto estos a un posible valor
 
+#realizo gráfica basica de los meses y sus frecuencias
+grafico <- ggplot(barra_frame, aes(x = Mes, y = V1)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Gráfico de Frecuencias", x = "Valor", y = "Frecuencia")
+
+grafico
