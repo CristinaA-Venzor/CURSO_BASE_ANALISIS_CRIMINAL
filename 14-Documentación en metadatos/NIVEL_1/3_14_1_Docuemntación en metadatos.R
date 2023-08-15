@@ -6,7 +6,6 @@
 #install.packages("pander")
 #library(summarytools)
 
-
 #library(dplyr)
 library(SmartEDA)
 library(knitr)
@@ -19,9 +18,8 @@ library(descr)
 library(pander)
 library("usethis")
 
-
-# Nombre.xlsx es la base de datos que se va a documentar
-df_base<-read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/f9fd5591bfa607cc41ab723e7c88563c71b655c5/Bases%20de%20datos/zacateca_hora_limpia.csv?token=GHSAT0AAAAAACCJCBZIUZKNZELOY6CWEYOUZGICWXQ")
+# Nombre.xlsx es la base de datos que se va a documentar (en este caso un vinculo terminacion.csv)
+df_base<-read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
 
 # Ejcutamos la creación de meta datos (informacion basica por variable)
 tabla_final<-SmartEDA::ExpData(df_base,type=2)
@@ -29,10 +27,8 @@ tabla_final<-SmartEDA::ExpData(df_base,type=2)
 # Cambio lo valores de las gráficas
 colnames(tabla_final)<-c("No.","Nombre de variable", "Tipo de datos", "Número de registros", "Valores faltantes", "Porcentaje de valores faltantes", "Número de valores distintos")
 
-
 # Exporto en documento de word
-flextable(tabla_final) %>% save_as_docx( path = "metadatos_nivel_1.docx")
-
+flextable(tabla_final) %>% save_as_docx( path = "metadatos_nivel_1.docx") # Se guarda en la carpeta de trabajo "getwd()"
 
 # Doy formato a la tabla y la genero en mi viewer
 tabla_final<-flextable::flextable(tabla_final)
