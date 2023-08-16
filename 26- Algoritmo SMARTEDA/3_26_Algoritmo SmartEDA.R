@@ -1,9 +1,18 @@
+
 # La primera vez que se ejecuta el código, es relevante instalar los paquetes
 # install.packages("devtools")
 #devtools::install_github("agstn/dataxray")
+#devtools::install_github("sicarul/xray")
+
+
+#Si te marca error en la instalación intenta correr primero las siguentes lineas:
+#Sys.getenv("GITHUB_PAT")
+#Sys.unsetenv("GITHUB_PAT")
+
 
 library(tidyverse)
 library(dataxray)
+library(xray)
 
 # Directorio debe ser sustituido por la ubicación del archivo con base en la computadora de cada usuario
 
@@ -14,6 +23,10 @@ delitos %>%
   make_xray() %>%
   view_xray() # Genero y visualizo mi xray donde se podran observar datos estadidisticos (medidas de tendencia central), sus respectivas graficas e informacion sobre el tipo de datos con que estoy trabajando
 
+# Información por columna
+tabla <- xray::anomalies(delitos)$variables
+colnames(tabla) <- c("variable", "conteo", "conteo_NA", "porcentaje_NA", "conteo_cero", "porcentaje_cero", "conteo_blanco", "porcentaje_blanco", "cuenta_inf", "porcentaje_inf", "porcentaje_distintos", "tipo", "porcentaje_anomalias" )
+View(tabla)
 
 # Visualiza la descrpipción de cada variable
 # Replica este script con la base de datos indicada
@@ -22,4 +35,3 @@ delitos %>%
   #2. ¿Cómo sirve este comando para la Política de Gestión, Validación y Limpieza de datos?
 
 
-  
