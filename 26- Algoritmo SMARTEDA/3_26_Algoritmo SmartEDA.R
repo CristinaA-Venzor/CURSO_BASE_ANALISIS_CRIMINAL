@@ -35,3 +35,5 @@ View(tabla)
   #2. ¿Cómo sirve este comando para la Política de Gestión, Validación y Limpieza de datos?
 
 
+# Suba aquí su ejercicio
+#https://forms.gle/Kov3Re1YjcMeiBSF6
