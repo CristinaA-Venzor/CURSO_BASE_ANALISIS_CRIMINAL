@@ -43,7 +43,6 @@ delitos$mes <- format(delitos$fecha_hechos,"%b")
 
 delitos <- delitos %>% clean_names()
 
-
 # GRAFICO DE FRECUENCIA EN HORARIO ----------------------------------------
 
 delitos <- delitos %>%
@@ -51,7 +50,9 @@ delitos <- delitos %>%
 
 delitos <- delitos %>% mutate(hora = format(hora_hechos, format = "%H")) # Me quedo solo con la hora de los hechos
 
-delitos$hora[delitos$hora == 00] <- 24 # Cambio la hora de 0:00:00 a 24:00:00
+delitos$hora <- as.numeric(delitos$hora) # Cambia la hora solita a datos de tipo numerico
+
+delitos$hora[delitos$hora == 0] <- 24 # Cambio la hora de 0:00:00 a 24:00:00
 
 #tabla de doble entrada
 table <- xtabs(~ hora+dia, data=delitos)
