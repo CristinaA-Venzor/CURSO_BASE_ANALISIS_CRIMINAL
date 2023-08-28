@@ -34,7 +34,7 @@ View(tablas_fiscalias)
 # CUANTILES
 
 
-#Genero los quartiles para la tabla de frecuencias de delitos
+#Genero los cuantil para la tabla de frecuencias de delitos
 quantile(tabla_delitos$Freq)
 
 #Genero los deciles para la tabla de frecuencias de deslitos
@@ -44,6 +44,24 @@ quantile(tabla_delitos$Freq, prob=seq(0, 1, length = 11))
 quantile(tabla_delitos$Freq, prob=seq(0, 1, length = 101))
 
 
+# Interpretación de cuantiles
+
+#Estas son algunas de las preguntas que se pueden responder con base en los cuantiles
+
+#Ya sabemos que el último 25% de la distribución por cuartiles es el más grande, entonces podemos decir
+cuartiles <- as.data.frame(quantile(tabla_delitos$Freq))
+ultimo_cuartil <- subset(tabla_delitos, tabla_delitos$Freq >= cuartiles[4,])
+ultimo_cuartil <- ultimo_cuartil[order(ultimo_cuartil$Freq, decreasing = F),]
+
+print("los delitos en el último cuartil de la distribución de delitos son:", ultimo_cuartil$Var1)
+
+#porcentaje que representa la incidencia del último cuantil, en proporción al resto
+
+proporcion <- round((sum(ultimo_cuartil$Freq)/sum(tabla_delitos$Freq))*100, 2)
+
+print(paste("el último cuartil de la distribución de incidencia delictiva representa:", proporcion, "%"))
+
+
 
 
 ### Extreae el rango y los quantiles de la base de datos indicada
@@ -51,4 +69,9 @@ quantile(tabla_delitos$Freq, prob=seq(0, 1, length = 101))
   #1. ¿Qué información nos da el rango de la variable?
   #2. ¿Cómo nos ayuda conocer los quintiles de una distribución?
   #3. ¿En qué otras variables nos ayuda tener el Conteo por categoría?
+ #4. Obten cuáles son los delitos del último decil
+ #5. Obten cuáles son los delitos del último percentil
+ #6. Calcula la proporción de incidencia del útlimo  decil
+ #7. Calcula la proporción de incidencia del útlimo  percentil
 
+#El script con tus cálculos y respuestas será el resultado que subirás al enlace de evaluación
