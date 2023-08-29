@@ -1,0 +1,228 @@
+---
+title: "Reporte anual 2020 de incidencia delictiva de Violnecia Familiar en la Ciudad de México"
+author: "Área de análisis"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(readxl)
+library(readr)
+#install.packages("tmaptools")
+library(tmaptools)
+library(tidyverse)
+library(knitr)
+library(SmartEDA)
+library(janitor)
+library(openxlsx)
+library(chron)
+library(dplyr)
+library("data.table")
+library(tidyr)
+library(tidyverse)
+library(lubridate)
+library("RColorBrewer")
+
+```
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#cargo datos 
+delitos <- read_csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/FGJ.csv")
+#pongo en formato fecha
+delitos$FechaHecho <- as.Date(delitos$FechaHecho, "%YYYY/%MM/%DD")
+#pongo en formato hora
+delitos$HoraHecho <- chron(times=delitos$HoraHecho) 
+#extraigo hora
+delitos <- delitos %>% mutate(hora=hour(strptime(HoraHecho, '%H:%M')) %>% as.character() )
+#extraigo día
+delitos$dia <- format(delitos$FechaHecho,"%A")
+#extraigo año
+delitos$año <- format(delitos$FechaHecho,"%Y")
+#extraigo mes
+delitos$mes <- format(delitos$FechaHecho,"%m")
+#ordeno mes
+delitos <- delitos[order(delitos$mes), ]
+
+año <- names(which.max(table(delitos$año)))
+delito <- unique(delitos$Delito)
+max <- max(delitos$`FECHA HECHO`)
+min <-  min(delitos$`FECHA HECHO`)
+total <- dim(delitos)
+
+```
+
+
+El presente reporte describe el comportamiento de `r delito`, en el periodo de `r max` a `r min`, en el que registró `r total[1]` carpetas de investigación. A continuación se grafica el comportamiento anual.
+
+```{r}
+
+fremes <- as.data.frame(table(delitos$mes))
+fremes$Var1 <- c("ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic")
+
+my_bar <- barplot(height=fremes$Freq, names.arg =fremes$Var1, 
+        col=rgb(0.8,0.1,0.1,0.6),
+        xlab="mes", 
+        ylab="ocurrencias", 
+        main=unique(delitos$Delito), las=2)
+
+text(my_bar, fremes$Freq - 9.5, labels = fremes$Freq)
+```
+
+# Conentración espacial
+
+Con base en el análisis georreferenciado de las carpetas de investigación, se han identificado {número de hot spots} zonas que concentran de forma crítica la problemática. Es decir, enfocando los recursos en la atención del delito en estas zonas se obtendría una disminución significativa.
+
+{Tabla con: nombre/número de zona; carpetas de investigación; porcentaje respecto al total}
+
+En el siguiente mapa se pueden identificar las zonas de atención prioritaria en el municipio para el delito de `r delito`.
+
+{mapa de hotpots en el municipio}
+
+A continuación se describe la situación en cada una de las zonas identificadas.
+
+Zona {número}
+
+La zona {número} se integra por las colonias {colonias} cuya principal actividad económica es {tres primeras categorías de unidades económicas de la DENUE}.
+
+
+{mapa de la zona}
+
+```{r}
+#tabla de doble entrada
+table <- xtabs(~ hora+dia, data=delitos)
+#convierto a matriz
+table <- as.matrix(table)
+#ordeno días
+table <- table[, c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")]
+# traduzco días
+colnames(table) <-  c("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo")
+#ordeno hora
+table <- table[c("1","2","3","4","5","6","7","8","10","11","12","13","14","15","16","17","18","19","20" ,"21","22","23","0"), ]
+table <- t(table)
+#quito las 0 horas por error de captura
+table <- table[, 1:22]
+
+dia_max <- names(which.max(rowSums(table)))
+hora_max <- names(which.max(colSums(table)))
+```
+
+
+# Temporalidad
+Respecto la incidencia delictiva en la zona, el día y horario de mayor concentración es `r dia_max` a las `r hora_max`. En la siguiente tabla se describe a detalle la concentración por hora y día del delito.
+
+
+
+```{r}
+
+#Grfico frecuencia
+heatmap(table, Colv = NA, Rowv = NA, col= colorRampPalette(brewer.pal(8, "YlOrRd"))(5), xlab="Hora", main="Frecuencias temporales")
+legend(x="bottomright",cex=0.4, legend=c("0-4", "5-9", "10-14", "15-19", "20-25"),fill=colorRampPalette(brewer.pal(8, "YlOrRd"))(5))
+```
+
+La incidencia delictivia se distribuye de la siguiente manera a través de las alcaldías
+
+```{r, fig.align = 'center'}
+
+alcaldias <- as.data.frame(table(delitos$alcaldia_hechos))
+alcaldias <- alcaldias[order(alcaldias$Freq), ]
+colnames(alcaldias) <- c("Alcaldía", "Frecuencia")
+
+kable(alcaldias, row.names=FALSE, align = 'c')
+```
+
+
+# Perfil de victima
+El perfil de la víctima respecto a su género es:
+
+```{r}
+
+genero <-  as.data.frame(table(delitos$Sexo))
+genero$porcentaje <- round((genero$Freq/sum(genero$Freq))*100, 2)
+colnames(genero) <- c("Genero", "Frecuencia", "Porcentaje")
+total_gen <- sum(genero$Frecuencia)
+
+kable(genero, align = 'c')
+
+```
+
+De un total de `r total_gen` registros con género de la víctima identificado
+
+El perfil de la víctima respecto a su edad es:
+
+```{r,fig.align = 'center'}
+ages <- data.frame(age = delitos$Edad)
+
+edades<- ages %>% mutate(age_group = cut(age, breaks = seq(0, 95, by = 5), labels = FALSE)) %>%
+            group_by(age_group) %>%
+            summarise(count = n())
+edades <- as.data.frame(edades)
+edades$age_group <- edades$age_group *5
+edades$grupo <- edades$age_group
+
+
+my_bar <- barplot(height=edades$count[-length(edades$count)], names=edades$grupo[-length(edades$grupo)], 
+        col=rgb(0.9,0.5,0.1,0.3),axes = FALSE,
+        xlab="Edad", 
+        main="Robo con violencia por edad de víctima", 
+        cex.axis=1, cex.names=.4) 
+text(my_bar, edades$count[-length(edades$count)] - 4, labels = edades$count[-length(edades$count)])
+```
+
+
+
+
+
+\newpage
+
+# Nota técnica
+
+En la presente sección se detalla la base de datos que sirvió como insumo del presente análisis.
+
+
+
+# Metadatos
+
+
+En este caso, los datos analizados corresponden a las carpetas de investigación para `r delito`, en el año `r año`,para Ciudad de México. La base de datos ya pasó por un preprocesamiento de limipieza de la información. 
+
+Con base en los datos que sistemáticamente son recolectados tenemos que sus caracteristicas se muestran en la siguiente tabla:
+
+
+```{r echo=FALSE, , out.width="50%"}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+p <- ExpData(delitos, type=1) 
+
+colnames(p) <- c("Descripción", "Valores")
+desc <- c("Tamaño de muestra (num. filas)", "No. de variables (num. col.)", "No, variables numéricas", "No. Variables de factor", "No. de variables de texto", "No, de variables lógicas", "No. de variables identificadoras", "No. de variables de fecha", "No. de variables de varianza cero (uniforme)", "% de variables con casos completos", "% de variables con >0% y <50% de casos perdidos", "% de variables con >=50% y <90% de casos perdidos", "%. de variables con >=90% de casos perdidos")
+p$Descripción <- desc
+
+kable(p, caption = "Exploración de la Información") 
+```
+
+Obtenemos una base de datos con `r total` observaciones con 27 columnas de información, de las cuales 8 son numéricas, 16 de texto y 2 de fecha.
+
+Sólo el 48.15% de las columnas son llenadas en su totalidad. Esto es una vez que se hizo una profunda limpieza de los datos. 
+
+```{r echo=FALSE, warning=FALSE, out.width="50%"}
+
+q <- as.data.frame(ExpData(delitos, type=2))
+tot <- q$Sample_n[13]
+tot1  <- q$Sample_n[12]- (edades$count[length(edades$count)])
+tot2  <- q$Sample_n[14]
+colnames(q) <- c("No.", "Nombre de variable", "Tipo de Variable", "Total", "Conteo de faltantes", "% de faltantes", "Valores únicos")
+q <-kable(q, caption = "Exploración de Datos")
+q
+```
+
+\
+
+De este análisis de la composición de los datos, puede observarse que las gráficas y tablas de perfil de la víctima se realiza suprimiendo los datos faltantes. En este sentido, el total de registros para analizar género es de `r tot`, edad con `r tot1` y ocupación con `r tot2`
