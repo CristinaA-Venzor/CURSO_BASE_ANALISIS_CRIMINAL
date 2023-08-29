@@ -1,0 +1,156 @@
+---
+title: "Reporte Automatizado"
+author: "Área de análisis"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# este chucnk no se muestra en el reporte, sólo se ejecutan sus instrucciones 
+# esto se ve entre corchetes echo = FALSE
+
+## cargo librerías
+library(readr)
+library(tidyverse)
+library(lubridate)
+library("RColorBrewer")
+library(SmartEDA)
+library(readxl)
+#library("dlookr")
+library(janitor)
+library(dplyr)
+library("data.table")
+library(tidyr)
+library(hms)
+```
+
+# Introducción
+
+R markdown es un lenguaje de texto sencillo y fácil de usar que se utiliza para combinar el código R, los resultados del análisis de datos (incluidos gráficos y tablas) y comentarios escritos en un único documento con un formato agradable y reproducible (como un informe, una publicación, un capítulo de tesis o una página web).
+
+Realizar reportes a través de R markdown, nos permite automatizar y replicar aquellos análisis de problemas públicos en materia de seguridad y procuración de justicia que requieren actualización constante y oportuna. 
+
+El objetivo de este primer reporte automatizado es integrar diversos temas que ya hemos visto, utilizando Rmarkdown. En este sentido, reconocerás pedazos de código y terminlogía que hemos utlizado en temas anteriores. Es recomendable que ejecutes este ejercicio una vez que hayas completado todas los ejercicios de sesiones pasadas.
+
+# A) Origen de la base de datos
+
+En esta sección retomamos el marco conceptual del repositorio de información y documentación de metadatos.
+
+
+
+## I. Descripción del metadato
+
+|Etiqueta del elemento  |Descripción del contenido/ Contenido esperado   |
+|---|---|
+|Área responsable de la elaboración del metadato  |  |
+|Fecha de conclusión de la documentación |   |
+|Número de identificación del documento de metadatos   |   |
+
+
+## II. Descripción de proyecto estadístico o base de datos
+
+|Etiqueta del elemento|Descripción del contenido/ Contenido esperado|
+|-------|-------|
+|Título||
+|Tipo de proyecto estadístico||
+|Resumen||
+|Unidad de análisis||
+|Clase de datos||
+|Instrumento(s) de captación de la información||
+|Cobertura geográfica||
+|Universo de estudio||
+
+## III. Descripción de las variables
+Nombre del archivo:
+```{r warning=FALSE, include=FALSE}
+
+# Directorio debe ser sustituido por la ubicación del archivo con base en la computadora de cada usuario
+
+# Nombre.xlsx es la base de datos que se va a documentar
+delitos<-read_csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
+
+# 1.- limpieza y filtración de datos
+
+# Nos quedamos con sólo un delito: 
+
+delitos <- subset(delitos, delito = "AMENAZAS") 
+
+# Nos quedamos con las variables que son de nuestro interés para el análisis
+conservar <- c("fecha_hechos", "mes_hechos", "hora_hechos", "agencia", "alcaldia_hechos", "municipio_hechos", "latitud", "longitud")
+  
+delitos <-  delitos[conservar]
+
+# elimino los repetidos
+delitos <- delitos[!duplicated(delitos[ ,c(1:8)]), ]
+
+#tablas de frecuencias por horas y fechas
+
+#pongo en formato fecha
+delitos$fecha_hechos <- as.Date(delitos$fecha_hechos, "%d/%m/%y")
+#pongo en formato hora
+#delitos$`Hora del delito` <- hms(delitos$`Hora del delito`)
+
+#extraigo hora
+delitos$hora <- hour(delitos$hora_hechos)
+#extraigo día
+delitos$dia <- format(delitos$fecha_hechos,"%A")
+#extraigo año
+delitos$año <- format(delitos$fecha_hechos,"%Y")
+#extraigo mes
+delitos$mes <- format(delitos$fecha_hechos,"%b")
+
+#extraigo datos meximos, minimos y totales
+año <- names(which.max(table(delitos$año)))
+max <- max(delitos$fecha_hechos)
+min <-  min(delitos$fecha_hechos)
+total <- dim(delitos)
+
+#limpieza automática de nombre de variables
+
+delitos <- delitos %>% clean_names()
+
+tabla_final<-SmartEDA::ExpData(delitos,type=2)
+
+colnames(tabla_final)<-c("No.","Nombre de variable", "Tipo de datos", "Número de registros", "Valores faltantes", "Porcentaje de valores faltantes", "Número de valores distintos")
+
+tabla_final<-flextable::flextable(tabla_final)
+#tabla_final<-width(tabla_final, 1, width = 0.3)
+#tabla_final<-width(tabla_final, 2, width = 1)
+```
+
+```{r echo=FALSE}
+tabla_final
+```
+
+La fase inicial de Análisis Exploratorio de Datos (EDA por las siglas en inglés) es crucial para obtener mejores resultados en las fases posteriores del análisis de datos.
+
+Las estimaciones del tiempo dedicado a EDA y a la preparación de datos oscilan entre el 60 y el 80% del tiempo total dedicado a un proyecto de Análisis de Datos.
+
+Sin embargo, existen paquetes en R que nos permitan acelerar nuestro EDA sin dejar de hacer un trabajo exhaustivo.
+
+Con una sola línea de código utilizando los métodos de SmartEDA, podemos obtener cada uno de los siguientes datos:
+* Información mucho más rica
+* Mejor formato de salida para facilitar la lectura
+* Resumen exhaustivo multipunto de cada característica del conjunto de fechas
+* Visualización de análisis univariantes y bivariantes
+
+La tabla resume cada característica del conjunto de datos, incluido el tipo de variable, el % de casos que faltan y varios valores únicos para cada parte.
+
+# B) Descripción de bases de datos
+
+Completa los campos vacios de este reporte.
+
+Describe la base datos con base en lo que conocemos hasta ahora
+
+
+# C) Ejercicio
+
+Identifica los elementos en este primer reporte de Rmarkdown
+Haz knit del documento para obtener el word
+Agrega un chunk con un código que genera una gráfica (no olvide agregar las librerías)
+Agrega el texto que describa la gráfica
+Cambia el tipo de documento a pdf
