@@ -12,12 +12,9 @@ setwd()  # Directorio/Carpeta a utilizar especificado dentro de los parentesis
 # Cargo librerías
 library(readr)
 library(ggplot2)
-library(tidyverse)
 library(lubridate)
 library(RColorBrewer)
-library(SmartEDA)
 library(janitor)
-library(dplyr)
 library(hms)
 library(anytime) 
 
@@ -32,13 +29,11 @@ delitos <- delitos %>% clean_names() # Limpieza automática de nombre de variabl
 delitos$fecha_hechos <- as.Date(delitos$fecha_hechos, "%d/%m/%y")
 
 #extraigo día
-delitos$dia <- format(delitos$fecha_hechos,"%A")
+delitos$dia <- format(delitos$fecha_hechos,"%u")
 #extraigo año
 delitos$año <- format(delitos$fecha_hechos,"%Y")
 #extraigo mes
-delitos$mes <- format(delitos$fecha_hechos,"%b")
-
-delitos <- delitos %>% clean_names()
+delitos$mes <- format(delitos$fecha_hechos,"%m")
 
 # GRAFICO DE FRECUENCIA EN HORARIO ----------------------------------------
 
@@ -49,42 +44,31 @@ delitos <- delitos %>% mutate(hora = format(hora_hechos, format = "%H")) # Me qu
 
 delitos$hora <- as.numeric(delitos$hora) # Cambia la hora solita a datos de tipo numerico
 
-delitos$hora[delitos$hora == 0] <- 24 # Cambio la hora de 0:00:00 a 24:00:00
-
 #tabla de doble entrada
 table <- xtabs(~ hora+dia, data=delitos)
+
 #convierto a matriz
 table <- as.matrix(table)
 
-#ordeno días
-table <- table[, c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")]
-# traduzco días
+# pongo días a nombre completo
 colnames(table) <-  c("lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo")
-
-#ordeno hora, es útil identificar qué horarios existen para modificar el listado de columnas a ordenar
-table <- table[c("1","2","3","4","5","6","7","8","9", "10","11","12","13","14","15","16","17","18","19","20" ,"21","22","23","0"), ]
-
-table <- t(table) # Quito las 0 horas por error de captura
+##Revisar si en nuestra tabla están todos los días, si no lo están borrar los que se omiten.
 
 df_mapa <- as.data.frame(table) # Genero el frame a partir del filtrado previo
 
-# Codigo para el grafico
+# Codigo para el gráfico
 ggp <- ggplot(df_mapa, aes(dia, hora)) + # ggplot(data_frame, aes(eje_x, eje_y))
   geom_tile(aes(fill = Freq)) + # Señalizacion del color
   ggtitle("Frecuencia temporal de Robo de objetos") + # Titulo
   theme(plot.title = element_text(hjust = 0.5, face = "bold")) # Tipo de grafico
 ggp + scale_fill_gradient(low = "white", high = "red") # Configuracion de los colores   
 
-# GRAFICO DE FRECUENCIA POR HORA ------------------------------------------
+# GRAFICO DE FRECUENCIA POR MES ------------------------------------------
 
-delitos <- delitos[!duplicated(delitos[ ,c(1:24)]), ] # Borro valores duplicados
+mes_1 <- as.data.frame(table(delitos$mes)) # Frame de las frecuencias
 
-mes_1 <- as.data.frame(table(delitos$mes_hechos)) # Frame de las frecuencias
-mes_1 <- subset(mes_1, mes_1$Var1 == "Enero" | mes_1$Var1 == "Febrero" | mes_1$Var1 == "Marzo" | mes_1$Var1 == "Abril") # Me quedo solo con los valores de los meses
-
-mes_1$Var1 <- factor(mes_1$Var1, levels = c("Enero", "Febrero", "Marzo", "Abril", "Mayo")) # Ordeno segun el pasar de los meses
-
-mes_1 <- mes_1[order(mes_1$Var1), ] # Ordenar el data frame según el orden personalizado de los meses
+mes_1$Var1 <- c("Enero", "Febrero", "Marzo", "Abril")# Ordeno segun el pasar de los meses
+#NOTA: aquí sólo hay 4 meses, revisar si es necesario adicionar meses
 
 # Histograma a partir de la funcion barplot
 my_bar <- barplot(height=mes_1$Freq, names.arg = mes_1$Var1, # height=frecuencia, names.arg = a_quien_pertenece,
