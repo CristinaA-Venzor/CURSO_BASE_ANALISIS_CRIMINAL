@@ -7,22 +7,19 @@ rm(list=ls())                                   # Limpiar
 setwd()  # Directorio/Carpeta a utilizar especificado dentro de los parentesis
 #############
 
+#install.packages("anytime")
+
 # Cargo librerías
 library(readr)
 library(ggplot2)
 library(tidyverse)
 library(lubridate)
-library("RColorBrewer")
+library(RColorBrewer)
 library(SmartEDA)
-library(readxl)
-#library("dlookr")
 library(janitor)
 library(dplyr)
-library("data.table")
-library(tidyr)
 library(hms)
-#install.packages("anytime")
-library("anytime") 
+library(anytime) 
 
 # Desde archivos separados por delimitador mediante un link (CSV)
 delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
