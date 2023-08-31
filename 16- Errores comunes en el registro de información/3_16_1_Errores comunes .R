@@ -7,45 +7,91 @@ rm(list=ls())                                   # Limpiar
 setwd()  # Directorio/Carpeta a utilizar especificado dentro de los parentesis
 #############
 
+#Instalar librerías
+#Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
+#install.packages(tidyverse)   # Contiene ggplot2
+#install.packages(readr)
+#install.packages(dplyr)
+#install.packages("janitor")
+#install.packages("usethis")
+#install.packages(datasets)
+
+
+##Activar librerías
 #devtools::install_github("hadley/tidyverse")
 library(tidyverse)   # Contiene ggplot2
 library(readr)
 library(dplyr)
-#install.packages("janitor")
 library(janitor)
-#install.packages("usethis")
 library("usethis")
 library(datasets)
 
 # Desde archivos separados por delimitador (como CSV)
-delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
+delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/FGJ.csv")
 
 # Veo las diemnsiones de la base de datos
 dim(delitos)
 
 # Borro valores duplicados cuando concuerdan en las columnas dentro de c
-delitos <- delitos[!duplicated(delitos[ ,c(4, 8, 11, 17)]), ]  # Delete rows
+delitos <- delitos[!duplicated(delitos[ ,c(2)]), ]  # Delete rows
  
 #reviso las nuevas dimensiones
 dim(delitos)
 
-#vemos que había líneas repetidas, por lo cuál ahora tenemos 65333 eventos.
+#vemos que había líneas repetidas, por lo cuál ahora tenemos 72434 eventos.
 
 #Contar Número de NAs: número de registros que no tiene información en datos de la colonia
-sum(is.na(delitos$colonia_datos))
+sum(is.na(delitos$Edad))
 
-data(iris) # Recurro a una base de datos dentro de R
 
-# Supongo que faltan valores, calculo el promedio Petal.Width sin considerar valores nulos
-iris$Petal.Width[is.na(iris$Petal.Width)]
-mean(iris$Petal.Width,na.rm=TRUE)
+# Básico
+#Estandarizar nombre de variables
+
+
+# re-escribios 3 nombres de variables 
+
+#criterios: minúsculas, sin acentos, sin espacios, corta
+colnames(delitos)[1] <- "NUMERO"
+colnames(delitos)[5] <- "FECHA_INICIO"
+
+#Otra manera de limpiar todos los nombres de las variables 
+delitos <- clean_names(delitos)
+
+# revisamos nombres de variables
+colnames(delitos)
+
+# Eliminar acentos en categoria del delito --------------------------------
+
+# Definir una función para reemplazar acentos por caracteres sin acento
+quitar_acentos <- function(texto) {
+  texto <- iconv(texto, to = "ASCII//TRANSLIT")
+  return(texto)
+}
+
+# Aplicar la función a la columna 'texto' del data frame
+delitos$categoria_del_delito <- sapply(delitos$categoria, quitar_acentos)
+
+
+
+
+#extraigo datos 
+total <- dim(delitos[1])
+categorria <-  table(delitos$delito)
+
+
+
 
 ##########################################
 #EJERCICIO
 
+#0) Replica el ejercicio con la base de datos propia
 #1) Cuántos valores faltantes hay en la columna "municipio_hechos"?
 #2) Elimina los valores faltentes en municipio_hechos
-#3) Eliina la columna si tiene más de la mitad de valores flatantes.
+#3) Elimina la columna si tiene más de la mitad de valores flatantes.
+#4) elimina los acentos de otra columna que consideres necesario
+#5) cambia la "ñ" por n en la columna de "fórmula dirección"
+#6) sustituye espacios por NA en don de consideres necesario
+#7) cuántos registros no tienen información de punto de referencia (NA)?
 
 #sube tu este Script contestando las preguntas a esta liga:
 # https://forms.gle/G8aJyP6vKVbYVTkb9
