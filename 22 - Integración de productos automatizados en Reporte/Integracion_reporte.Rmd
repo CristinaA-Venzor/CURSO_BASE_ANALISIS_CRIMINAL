@@ -1,5 +1,5 @@
 ---
-title: "Reporte anual 2020 de incidencia delictiva de Violnecia Familiar en la Ciudad de México"
+title: "Reporte anual 2020 de incidencia delictiva de Violencia Familiar en la Ciudad de México"
 author: "Área de análisis"
 date: "`r Sys.Date()`"
 output: word_document
@@ -100,7 +100,7 @@ table <- xtabs(~ hora+dia, data=delitos)
 #convierto a matriz
 table <- as.matrix(table)
 #ordeno días
-table <- table[, c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")]
+#table <- table[, c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")]
 # traduzco días
 colnames(table) <-  c("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo")
 #ordeno hora
