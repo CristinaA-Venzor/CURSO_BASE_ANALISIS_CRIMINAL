@@ -11,23 +11,19 @@ knitr::opts_chunk$set(
 	message = FALSE,
 	warning = FALSE
 )
-library(readxl)
+## cargo librerías
 library(readr)
-#install.packages("tmaptools")
 library(tmaptools)
 library(tidyverse)
 library(knitr)
 library(SmartEDA)
 library(janitor)
-library(openxlsx)
 library(chron)
 library(dplyr)
 library("data.table")
 library(tidyr)
-library(tidyverse)
 library(lubridate)
 library("RColorBrewer")
-
 ```
 
 
@@ -176,28 +172,20 @@ text(my_bar, edades$count[-length(edades$count)] - 4, labels = edades$count[-len
 ```
 
 
-
-
-
 \newpage
 
 # Nota técnica
 
 En la presente sección se detalla la base de datos que sirvió como insumo del presente análisis.
 
-
-
 # Metadatos
-
 
 En este caso, los datos analizados corresponden a las carpetas de investigación para `r delito`, en el año `r año`,para Ciudad de México. La base de datos ya pasó por un preprocesamiento de limipieza de la información. 
 
 Con base en los datos que sistemáticamente son recolectados tenemos que sus caracteristicas se muestran en la siguiente tabla:
 
-
 ```{r echo=FALSE, , out.width="50%"}
 knitr::opts_chunk$set(echo = TRUE)
-
 
 p <- ExpData(delitos, type=1) 
 
@@ -222,7 +210,6 @@ colnames(q) <- c("No.", "Nombre de variable", "Tipo de Variable", "Total", "Cont
 q <-kable(q, caption = "Exploración de Datos")
 q
 ```
-
 \
 
 De este análisis de la composición de los datos, puede observarse que las gráficas y tablas de perfil de la víctima se realiza suprimiendo los datos faltantes. En este sentido, el total de registros para analizar género es de `r tot`, edad con `r tot1` y ocupación con `r tot2`
