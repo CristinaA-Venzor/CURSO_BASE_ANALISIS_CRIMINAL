@@ -7,11 +7,11 @@ rm(list=ls())                                   # Limpiar
 setwd()  # Directorio/Carpeta a utilizar especificado dentro de los parentesis
 #############
 
-#devtools::install_github("hadley/tidyverse")
-library(tidyverse)   # Contiene ggplot2
-library(readr)
-library(dplyr)
-#install.packages("janitor")
+## Instalar librerías
+# Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
+# install.packages("janitor")
+
+## Activar librerías
 library(janitor)
 
 # Desde archivos separados por delimitador (como CSV)
