@@ -38,28 +38,16 @@ list.files(getwd()) # Qué archivos contiene mi directorio de trabajo
 #################################
 # 2.1.3 INSTALAR Y CARGAR LIBRERIAS
 
-# En cuestión de estilo, hay quien prefiere instalar-cargar las librerías justo antes de usarlas a medio código.
-
+## Instalar librerías
+# Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
+# install.packages("janitor")
+# install.packages("dplyr")
 # install.packages("readr")
+
+## Activar librerías
 library(readr) # Para importar de distintos formatos con delimitadores
-# install.packages("foreign")
-library(foreign) # Para importa de distintos formatos
-# install.packages("haven")
-# install.packages("Hmisc")
-# install.packages("stargazer")
-# install.packages("readxl")
-# install.packages('epiDisplay')
-library(epiDisplay)
-library(haven) # Paquete para importar archivos DTA (Stata)
-library(xlsx) # Paquete para exportar archivos en Excel
-library(Hmisc) #Paquete par mostrar estad?sticas descriptivas
-library(stargazer) #Paquete par mostrar estad?sticas descriptivas
-library(readxl) # Otro paquete para leer libros de excel
-library(sjlabelled) # Paquete para etiquetar variables
-#install.packages("tidyverse")
-library(tidyverse) # Metapaquete para Manipular datos (magrittr, dplyr, ggplot2, tidyr, purrr)
-#devtools::install_github("hadley/tidyverse")
-library(datasets) # Contiene Dataset "iris"
+library(dplyr)
+library(janitor)
 
 ##########################################
 # 2.2 IMPORTAR Y EXPORTAR DATOS
