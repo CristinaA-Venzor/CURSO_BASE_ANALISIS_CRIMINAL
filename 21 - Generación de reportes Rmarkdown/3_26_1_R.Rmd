@@ -15,17 +15,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## cargo librerías
 library(readr)
+library(tmaptools)
 library(tidyverse)
-library(lubridate)
-library("RColorBrewer")
+library(knitr)
 library(SmartEDA)
-library(readxl)
-#library("dlookr")
 library(janitor)
+library(chron)
 library(dplyr)
 library("data.table")
 library(tidyr)
-library(hms)
+library(lubridate)
+library("RColorBrewer")
 ```
 
 # Introducción
@@ -39,8 +39,6 @@ El objetivo de este primer reporte automatizado es integrar diversos temas que y
 # A) Origen de la base de datos
 
 En esta sección retomamos el marco conceptual del repositorio de información y documentación de metadatos.
-
-
 
 ## I. Descripción del metadato
 
@@ -145,7 +143,6 @@ La tabla resume cada característica del conjunto de datos, incluido el tipo de 
 Completa los campos vacios de este reporte.
 
 Describe la base datos con base en lo que conocemos hasta ahora
-
 
 # C) Ejercicio
 
