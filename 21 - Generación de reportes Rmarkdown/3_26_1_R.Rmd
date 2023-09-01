@@ -14,18 +14,11 @@ knitr::opts_chunk$set(echo = TRUE)
 # esto se ve entre corchetes echo = FALSE
 
 ## cargo librerías
-library(readr)
-library(tmaptools)
-library(tidyverse)
-library(knitr)
-library(SmartEDA)
-library(janitor)
-library(chron)
-library(dplyr)
-library("data.table")
-library(tidyr)
 library(lubridate)
-library("RColorBrewer")
+library(janitor)
+library(dplyr)
+library(magrittr)
+library(readr)
 ```
 
 # Introducción
