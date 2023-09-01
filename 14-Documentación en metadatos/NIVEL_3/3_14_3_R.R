@@ -1,18 +1,11 @@
-# La primera vez que se ejecuta el código, es relevante instalar los paquetes
-#install.packages("kableExtra")
-#install.packages("summarytools")
-#install.packages("flextable")
-#install.packages("gt")
-#install.packages("pander")
+## Instalar librerías
+# Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
+# install.packages("magrittr")
+# install.packages("flextable")
 
-library(SmartEDA)
-library(knitr)
-library(kableExtra)
-library(readxl)
+## Activar librerías
 library(flextable)
-library(janitor)
-library(descr)
-library(pander)
+library(magrittr)
 
 # Directorio debe ser sustituido por la ubicación del archivo con base en la computadora de cada usuario
 
