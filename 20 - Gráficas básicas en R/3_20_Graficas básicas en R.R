@@ -7,18 +7,16 @@ rm(list=ls())                                   # Limpiar
 setwd()  # Directorio/Carpeta a utilizar especificado dentro de los parentesis
 #############
 
-#install.packages("anytime")
-#install.packages(dplyr)
+## Instalar librerías
+# Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
+# install.packages("janitor")
+# install.packages("dplyr")
+# install.packages("ggplot2")
 
-# Cargo librerías
-library(readr)
+## Activar librerías
 library(ggplot2)
-library(lubridate)
-library(RColorBrewer)
-library(janitor)
-library(hms)
-library(anytime)
 library(dplyr)
+library(janitor)
 
 # Desde archivos separados por delimitador mediante un link (CSV)
 delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
