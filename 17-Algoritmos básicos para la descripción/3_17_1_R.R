@@ -2,23 +2,17 @@
 # Descripción de datos en R
 ############################################
 
-library(tidyverse)   # Contiene ggplot2
-library(readr)
-library(dplyr)
-library(ggplot)
-library(readr)
-library(tmaptools)
-library(tidyverse)
-library(knitr)
-library(SmartEDA)
-library(janitor)
-library(dplyr)
-library("data.table")
-library(tidyr)
-library(tidyverse)
+## Instalar librerías
+# Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
+# install.packages("magrittr")
+# install.packages("dplyr")
+# install.packages("ggplot2")
+# install.packages("lubridate")
+
+## Activar librerías
 library(lubridate)
-library("RColorBrewer")
 library(ggplot2)
+library(dplyr)
 library(magrittr)
 
 #############
