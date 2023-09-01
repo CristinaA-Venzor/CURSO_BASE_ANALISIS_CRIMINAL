@@ -28,7 +28,8 @@ data$municipio <- "CHIHUAHUA"
 data$pais <-  "MEXICO"
 
 #inserto códigos postales
-# PARA INSERTAR CÓDIGOS POSTALES IR AL SITITO OFICIAL DE SEPOMEX https://www.correosdemexico.gob.mx/SSLServicios/ConsultaCP/Descarga.aspx 
+# PARA OBTENER BASE DE DATOS DE LOS CÓDIGOS POSTALES IR AL SITITO OFICIAL DE SEPOMEX
+#https://www.correosdemexico.gob.mx/SSLServicios/ConsultaCP/Descarga.aspx 
 
 cp <- read_csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/Copia%20de%20CP_CHIHUAHUA_CHI.csv")
 cp$Asentamiento <-  toupper(cp$Asentamiento)
@@ -92,12 +93,13 @@ addresses <- stripWhitespace(addresses)
 
 
 ######OPEN STREET MAP
-##########try an catch
+###########NOTA: este sistema de referecnias es gratuito puede consultarse sin restricción
+############# LA EJECUCIÓN ES DE APROXIMADAMENTE 5 MINUTOS POR 100 DIRECCIONES. 
+#############POR LO QUE EN MILES DE DIRECCIONES, SE PUEDE TARDAR HORAS. ES NORMAL, SÓLO TOME SUS CONSIDERACIONES
 
 
 
- ############NOTA
-
+### esto es un sistema de try and catch, que es una buena práctica pero no forzoso
 geocode_with_error_handling <- function(address) {
   result <- tryCatch(
     expr = {
@@ -114,7 +116,9 @@ geocode_with_error_handling <- function(address) {
 }
 
 
+#colocamos una dirección cualquiera para la primera iteración
 address_to_geocode <- "123 Main St, City, Country"
+#decimos donde guardar futuras iteraciones
 geocoded_result <- geocode_with_error_handling(address_to_geocode)
 
 if (!is.null(geocoded_result)) {
@@ -125,7 +129,7 @@ if (!is.null(geocoded_result)) {
   cat("Geocoding failed for:", address_to_geocode, "\n")
 }
 
-############3
+############
 
 
 # renombro para juntar las bases
@@ -147,14 +151,20 @@ write.csv(base, "georreferenciados.csv")
 
 #SET api key
 ### ESTA LLAVE SE TIENE QUE CONFIGURAR PERSONALMENTE ESTE EJEMPLO YA NO ESTARÁ ACTIVO
+###CONSULTA EL VIDEO EN LOS RECURSOS DEL EJERCICIO PARA OBTENER LA TUYA
+####RECUERDA QUE ESTA KEY ES PERSONAL Y CUESTA 0.005 DOLARES POR CONSULTA. 
+##### AUNQUE EN LA PRIMERA ITERACIÓN TENEMOS SALDO GRATIS, 
+
+
 #register_google(key = "AIzaSyB3kSKy6zlUi-G4uYYYDkKqCZ43F8H-s")
 
 
 ##########comenzar un proceso de google
+### esto es un sistema de try and catch, que es una buena práctica pero no forzoso
 geocode_with_error_handling <- function(address) {
   result <- tryCatch(
     expr = {
-      #geocode(addresses)  # Replace with the actual function call
+      geocode(addresses)  # Replace with the actual function call
     },
     error = function(e) {
       # Handle the error here
@@ -166,8 +176,9 @@ geocode_with_error_handling <- function(address) {
   return(result)
 }
 
-
+#colocamos una dirección cualquiera para la primera iteración
 address_to_geocode <- "123 Main St, City, Country"
+#decimos donde guardar futuras iteraciones
 geocoded_result <- geocode_with_error_handling(address_to_geocode)
 
 if (!is.null(geocoded_result)) {
