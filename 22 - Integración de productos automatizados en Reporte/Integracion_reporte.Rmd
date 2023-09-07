@@ -1,5 +1,5 @@
 ---
-title: "Reporte anual 2020 de incidencia delictiva de Violencia Familiar en la Ciudad de México"
+title: "Reporte de incidencia de Violencia Familiar en la Ciudad de México"
 author: "Área de análisis"
 date: "`r Sys.Date()`"
 output: word_document
@@ -48,8 +48,9 @@ delitos <- delitos[order(delitos$mes), ]
 
 año <- names(which.max(table(delitos$año)))
 delito <- unique(delitos$Delito)
-max <- max(delitos$`FECHA HECHO`)
-min <-  min(delitos$`FECHA HECHO`)
+fecha <- delitos$FechaInicio
+max <- sort(fecha)[length(fecha)-1]
+min <-  sort(fecha)[1]
 total <- dim(delitos)
 
 ```
@@ -57,18 +58,21 @@ total <- dim(delitos)
 
 El presente reporte describe el comportamiento de `r delito`, en el periodo de `r max` a `r min`, en el que registró `r total[1]` carpetas de investigación. A continuación se grafica el comportamiento anual.
 
-```{r}
+```{r, fig.width = 5}
 
-fremes <- as.data.frame(table(delitos$mes))
+fremes <- as.data.frame(table(delitos$mes)) #conteo de delitos por mes en table
 fremes$Var1 <- c("ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic")
+#eliminar los meses en donde no hay ocurrencias
 
-my_bar <- barplot(height=fremes$Freq, names.arg =fremes$Var1, 
-        col=rgb(0.8,0.1,0.1,0.6),
-        xlab="mes", 
-        ylab="ocurrencias", 
-        main=unique(delitos$Delito), las=2)
+my_bar <- barplot(fremes$Freq , border=F , names.arg=fremes$Var1 , 
+                  las=2 , 
+                  col= "#BA344C",
+                  main="Frecuencia mensual de Violencia Familiar",
+                  xlab = "Mes",
+                  yaxt="n",
+                  ylab= "Frecuencia")
 
-text(my_bar, fremes$Freq - 9.5, labels = fremes$Freq)
+text(my_bar,0, fremes$Freq, cex =.5, pos = 3, col = "white") 
 ```
 
 # Conentración espacial
@@ -91,19 +95,21 @@ La zona {número} se integra por las colonias {colonias} cuya principal activida
 {mapa de la zona}
 
 ```{r}
+
+delitos$hora <- as.numeric(delitos$hora) # Cambia la hora solita a datos de tipo numerico
+
 #tabla de doble entrada
 table <- xtabs(~ hora+dia, data=delitos)
+
 #convierto a matriz
 table <- as.matrix(table)
-#ordeno días
-#table <- table[, c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")]
-# traduzco días
-colnames(table) <-  c("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo")
-#ordeno hora
-table <- table[c("1","2","3","4","5","6","7","8","10","11","12","13","14","15","16","17","18","19","20" ,"21","22","23","0"), ]
-table <- t(table)
-#quito las 0 horas por error de captura
-table <- table[, 1:22]
+
+# pongo días a nombre completo
+colnames(table) <-  c("lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo")
+##Revisar si en nuestra tabla están todos los días, si no lo están borrar los que se omiten.
+
+df_mapa <- as.data.frame(table) # Genero el frame a partir del filtrado previo
+
 
 dia_max <- names(which.max(rowSums(table)))
 hora_max <- names(which.max(colSums(table)))
@@ -117,9 +123,13 @@ Respecto la incidencia delictiva en la zona, el día y horario de mayor concentr
 
 ```{r}
 
-#Grfico frecuencia
-heatmap(table, Colv = NA, Rowv = NA, col= colorRampPalette(brewer.pal(8, "YlOrRd"))(5), xlab="Hora", main="Frecuencias temporales")
-legend(x="bottomright",cex=0.4, legend=c("0-4", "5-9", "10-14", "15-19", "20-25"),fill=colorRampPalette(brewer.pal(8, "YlOrRd"))(5))
+# Codigo para el gráfico
+ggp <- ggplot(df_mapa, aes(dia, hora)) + # ggplot(data_frame, aes(eje_x, eje_y))
+  geom_tile(aes(fill = Freq)) + # Señalizacion del color
+  ggtitle("Frecuencia temporal de Violencia Familiar") + # Titulo
+  theme(plot.title = element_text(hjust = 0.5, face = "bold")) # Tipo de grafico
+ggp + scale_fill_gradient(low = "white", high = "red") # Configuracion de los colores   
+
 ```
 
 La incidencia delictivia se distribuye de la siguiente manera a través de las alcaldías
@@ -144,7 +154,9 @@ genero$porcentaje <- round((genero$Freq/sum(genero$Freq))*100, 2)
 colnames(genero) <- c("Genero", "Frecuencia", "Porcentaje")
 total_gen <- sum(genero$Frecuencia)
 
-kable(genero, align = 'c')
+#kable(genero, align = 'c')
+
+pie(genero$Porcentaje, labels = genero$Genero, main="Distribución de víctima de Violencia Familiar por Género")
 
 ```
 
@@ -166,9 +178,10 @@ edades$grupo <- edades$age_group
 my_bar <- barplot(height=edades$count[-length(edades$count)], names=edades$grupo[-length(edades$grupo)], 
         col=rgb(0.9,0.5,0.1,0.3),axes = FALSE,
         xlab="Edad", 
-        main="Robo con violencia por edad de víctima", 
+        main="Violencia familiar por edad de víctima", 
         cex.axis=1, cex.names=.4) 
-text(my_bar, edades$count[-length(edades$count)] - 4, labels = edades$count[-length(edades$count)])
+text(my_bar,edades$count[-length(edades$count)] - 4, cex =.5, labels = edades$count[-length(edades$count)], pos =3)
+
 ```
 
 
