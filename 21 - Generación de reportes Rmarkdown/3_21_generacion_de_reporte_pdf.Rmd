@@ -20,6 +20,14 @@ library(dplyr)
 library(magrittr)
 library(readr)
 library(kableExtra)
+library(tinytex)
+library(knitr)
+#install.packages("knitr")
+
+#install.packages("tinytex")
+#tinytex::install_tinytex()
+
+
 ```
 
 # Introducción
