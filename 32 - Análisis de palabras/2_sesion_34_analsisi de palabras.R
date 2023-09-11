@@ -162,7 +162,7 @@ nov_mat[1:10, ] %>%
   geom_bar(stat = "identity", color = "black", fill = "#87CEFA") +
   geom_text(aes(hjust = 1.3, label = frec)) + 
   coord_flip() + 
-  labs(title = "Diez palabras más frecuentes en Niebla",  x = "Palabras", y = "Número de usos")
+  labs(title = "Diez palabras más frecuente",  x = "Palabras", y = "Número de usos")
 
 ##################
 ##Asociaciones entre palabras
