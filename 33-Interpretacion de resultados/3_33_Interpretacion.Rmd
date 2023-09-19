@@ -1,0 +1,40 @@
+---
+title: "Reporte Automatizado"
+author: "Área de análisis"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Este chucnk no se muestra en el reporte, sólo se ejecutan sus instrucciones. Esto se ve entre corchetes echo = FALSE
+
+## cargo librerías
+library(tm)
+library(read.table)
+library(wordcloud)
+library(ggplot2)
+library(dplyr)
+library(readr)
+```
+
+# Introducción
+
+```{r warning=FALSE, include=FALSE}
+
+```
+
+```{r echo=FALSE}
+
+```
+
+
+# C) Ejercicio
+
+Identifica los elementos previamente utilizados en el reporte de Rmarkdown
+Haz knit del documento para obtener el word
+Agrega un chunk con un código que genera una gráfica (no olvide agregar las librerías)
+Agrega el texto que describa la gráfica
