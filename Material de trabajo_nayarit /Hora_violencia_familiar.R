@@ -13,7 +13,6 @@ setwd("/Users/cristinaalvarez/Downloads")
 data <- read.csv("violencia familiar 2022_georreferenciado.csv", fileEncoding = "latin1") 
 View(data)
 
-
 # Limpieza de columna "Hora de hechos" ------------------------------------
 
 #cuento observaciones faltantes antes
@@ -27,7 +26,7 @@ sum(is.na(data$fecha_del_estado))
 data$conteo <- nchar(data$fecha_del_estado)
 
 # convierto a Na (valor faltante) todos los que tengan diferente número de caracteres a 10
-data$FECHA.DEL.SUCESO[data$conteo != 10] <- NA
+data$fecha_del_estado[data$conteo != 10] <- NA
 
 # Pongo formato fecha a la columna, pongo coerse por que si hay algún character que no forme fecha
-data$FECHA.DEL.SUCESO <- as.Date(data$FECHA.DEL.SUCESO, format = "%d/%m/%Y", errors = "coerce")
+data$fecha_del_estado <- as.Date(data$fecha_del_estado, format = "%d/%m/%Y", errors = "coerce")
