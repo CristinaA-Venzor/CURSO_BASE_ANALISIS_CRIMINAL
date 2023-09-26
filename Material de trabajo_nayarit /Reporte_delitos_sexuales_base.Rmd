@@ -106,7 +106,8 @@ Con base en el análisis georreferenciado de las carpetas de investigación, se 
 
 En el siguiente mapa se pueden identificar las zonas de atención prioritaria en el municipio para el delito de `r delito`.
 
-{mapa de hotpots en el municipio}
+![Zonas identificadas como hot spot](delitos_sexuales.png)
+
 
 A continuación se describe la situación en cada una de las zonas identificadas.
 
