@@ -9,14 +9,15 @@ setwd()  # Directorio/Carpeta a utilizar especificado dentro de los parentesis
 
 ## Instalar librerías
 # Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
-# install.packages("janitor")
-# install.packages("dplyr")
-# install.packages("ggplot2")
+
+#install.packages("tidyverse")
+#install.packages("janitor")
+#install.packages("magrittr")
 
 ## Activar librerías
-library(ggplot2)
-library(dplyr)
+library(tidyverse)
 library(janitor)
+library(magrittr)
 
 # Desde archivos separados por delimitador mediante un link (CSV)
 delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
