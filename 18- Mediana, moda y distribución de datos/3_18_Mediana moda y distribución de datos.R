@@ -40,14 +40,15 @@ list.files(getwd()) # Qué archivos contiene mi directorio de trabajo
 
 ## Instalar librerías
 # Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
-# install.packages("janitor")
-# install.packages("dplyr")
-# install.packages("readr")
+
+#install.packages("tidyverse")
+#install.packages("janitor")
+#install.packages("magrittr")
 
 ## Activar librerías
-library(readr) # Para importar de distintos formatos con delimitadores
-library(dplyr)
+library(tidyverse)
 library(janitor)
+library(magrittr)
 
 ##########################################
 # 2.2 IMPORTAR Y EXPORTAR DATOS
@@ -77,10 +78,10 @@ str(delitos) # Estructura de los delitos
 # Limpieza de datos
 delitos <- clean_names(delitos) # Limpio los titulos de mis columnas para que su escritura sea mas amigable con el texto
 
-data("mtcars")
-Carritos <- as.data.frame(mtcars)
+data("mtcars") # Recurro a mtcars
+Carritos <- as.data.frame(mtcars) # Convierto mtcars a base de datos
 
-?mtcars
+?mtcars # Checo onformacion de la base de datos
 
 Carritos <- Carritos %>% rename(millas_por_galon = mpg, cilindros = cyl, desplazamiento = disp, potencia = hp, relacion_eje = drat, peso = wt, velocidad = qsec, motor = vs, transmicion = am, n_velocidades = gear, n_carburadores = carb)
 
