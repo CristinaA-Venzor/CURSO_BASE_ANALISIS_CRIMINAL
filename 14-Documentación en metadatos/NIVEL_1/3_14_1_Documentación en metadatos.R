@@ -1,5 +1,6 @@
 ## Instalar librerías
 # Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
+
 # install.packages("magrittr")
 # install.packages("flextable")
 
@@ -21,5 +22,7 @@ flextable(tabla_final) %>% save_as_docx( path = "metadatos_nivel_1.docx") # Se g
 
 # Doy formato a la tabla y la genero en mi viewer
 tabla_final<-flextable::flextable(tabla_final)
+
 tabla_final<-width(tabla_final, 2, width = 1)
+
 tabla_final
