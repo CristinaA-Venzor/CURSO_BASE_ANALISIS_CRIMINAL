@@ -9,22 +9,13 @@ setwd()  # Directorio/Carpeta a utilizar especificado dentro de los parentesis
 
 #Instalar librerías
 #Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
-#install.packages(tidyverse)   # Contiene ggplot2
-#install.packages(readr)
-#install.packages(dplyr)
-#install.packages("janitor")
-#install.packages("usethis")
-#install.packages(datasets)
 
+#install.packages("tidyverse")
+# install.packages("janitor")
 
-##Activar librerías
-#devtools::install_github("hadley/tidyverse")
-library(tidyverse)   # Contiene ggplot2
-library(readr)
-library(dplyr)
+## Activar librerías
+library(tidyverse)
 library(janitor)
-library("usethis")
-library(datasets)
 
 # Desde archivos separados por delimitador (como CSV)
 delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/FGJ.csv")
@@ -43,10 +34,8 @@ dim(delitos)
 #Contar Número de NAs: número de registros que no tiene información en datos de la colonia
 sum(is.na(delitos$Edad))
 
-
 # Básico
 #Estandarizar nombre de variables
-
 
 # re-escribios 3 nombres de variables 
 
@@ -71,15 +60,9 @@ quitar_acentos <- function(texto) {
 # Aplicar la función a la columna 'texto' del data frame
 delitos$categoria_del_delito <- sapply(delitos$categoria, quitar_acentos)
 
-
-
-
 #extraigo datos 
-total <- dim(delitos[1])
-categorria <-  table(delitos$delito)
-
-
-
+total <- dim(delitos[1]) #Tomo la primera columna
+categorria <-  table(delitos$delito) #Tomo la columna delitos
 
 ##########################################
 #EJERCICIO
