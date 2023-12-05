@@ -1,6 +1,11 @@
 ################################################
 # Algortimos básicos para la descripción de datos en R
 ################################################
+
+#install.packages("tidyverse")
+library(magrittr) # Poder usar %<%
+library(tidyverse)
+
 #ejemplo de commit
 
 # 1.1 Obtener ayuda
@@ -20,10 +25,8 @@
 # 1.5 acercamiento exploratorio a base de datos
 ################################################
 
-
 ###################
 # 1.1 Obtener ayuda
-
 
 help(sd) # Funciones
 ?iris  # bases de datos
@@ -71,8 +74,7 @@ typeof(1L)
 
 #########
 # Brief description
-str() # Dentro dos parentesis coloco aquel elemento del cual quiera conocer su estructura
-#skim{skimr}
+str(sex) # Dentro dos parentesis coloco aquel elemento del cual quiera conocer su estructura#skim{skimr}
 
 #########
 # Evaluando el tipo de datos 
@@ -151,7 +153,6 @@ mi_df
 class(mi_df$numero)
 names(mi_df) # Nombres de las columnas(variables)
 
-
 ##############
 #Brief summary
 summary(mi_df)  # Informacion y datos estadisticos de mi {base}
@@ -166,13 +167,12 @@ summary(mi_df)  # Informacion y datos estadisticos de mi {base}
 #4) cuántas observaciones hay en la base?
 #4) cuántas observacionesde la columna mpg tienen valores faltantes?
 
-
 #Comandos para la exploración de bases de datos
 data("mtcars") # cargamos base de datos instalda en R como ejemplo
 View(mtcars) # visualizar la base de datos
 help(mtcars) # documentación "Meta datos" de la base
 
-mtcars %>% str() # primer acercamiento a los datos 
+str(mtcars) # primer acercamiento a los datos 
 
 table(mtcars$mpg) #cantidad del mismo valor
 
@@ -185,19 +185,17 @@ dim(mtcars) # dimensiones de bases de datos
 
 sum(is.na(mtcars$mpg)) #suma el número de valores faltantes en una columna
 
-x = remove_empty(mtcars, which = c("rows","cols")) # elimina las columnas que están completamente vacías y las filas enteras que están completamente vacías.
+x <- mtcars %>%
+  drop_na() %>%
+  select_if(~any(!is.na(.))) # elimina las columnas que están completamente vacías y las filas enteras que están completamente vacías.
 
 summary(mtcars) # aporta datos estadisticos
 
 ## ahora explora la base de datos
 data(iris)
 
-
 ## guarda este script con tus modificaciones donde exploraste la base de datos, como resultado de tu ejercicio.
 ## compartélo a la siguiente liga: 
 #        https://forms.gle/MbMQJZdgDTuUHZXn7 
 
-
 #########################################
-#########################################
-
