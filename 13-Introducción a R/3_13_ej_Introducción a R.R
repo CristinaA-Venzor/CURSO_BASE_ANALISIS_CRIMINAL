@@ -3,6 +3,7 @@
 ################################################
 
 #install.packages("tidyverse")
+#install.packages("magrittr")
 library(magrittr) # Poder usar %<%
 library(tidyverse)
 
