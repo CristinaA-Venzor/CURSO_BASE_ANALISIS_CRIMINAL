@@ -6,10 +6,11 @@
 
 ## Instalar librerías
 # Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
-# install.packages("lubridate")
+
+#install.packages("tidyverse")
 
 ## Activar librerías
-library(lubridate)
+library(tidyverse)
 
 #Cargo base de datos
 delitos <- read.csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/carpetas_2023.csv")
@@ -30,7 +31,7 @@ tabla_delitos<- as.data.frame(table(delitos$delito))
 View(tabla_delitos)
 
 tabla_fiscalias <- as.data.frame(table(delitos$fiscalia))
-View(tablas_fiscalias)
+View(tabla_fiscalias)
 
 # CUANTILES
 
@@ -52,14 +53,14 @@ cuartiles <- as.data.frame(quantile(tabla_delitos$Freq))
 ultimo_cuartil <- subset(tabla_delitos, tabla_delitos$Freq >= cuartiles[4,])
 ultimo_cuartil <- ultimo_cuartil[order(ultimo_cuartil$Freq, decreasing = F),]
 
-print("los delitos en el último cuartil de la distribución de delitos son:", ultimo_cuartil$Var1)
+# print("los delitos en el último cuartil de la distribución de delitos son:", ultimo_cuartil$Var1)
+# # Respuesta de extencion muy grande
 
 #porcentaje que representa la incidencia del último cuantil, en proporción al resto
 
 proporcion <- round((sum(ultimo_cuartil$Freq)/sum(tabla_delitos$Freq))*100, 2)
 
 print(paste("el último cuartil de la distribución de incidencia delictiva representa:", proporcion, "%"))
-
 
 ### Extreae el rango y los quantiles de la base de datos indicada
 #responda:
