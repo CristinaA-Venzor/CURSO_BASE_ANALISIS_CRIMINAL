@@ -4,15 +4,14 @@
 
 ## Instalar librerías
 # Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
-# install.packages("magrittr")
-# install.packages("dplyr")
-# install.packages("ggplot2")
-# install.packages("lubridate")
+
+#install.packages("tidyverse")
+#install.packages("janitor")
+#install.packages("magrittr")
 
 ## Activar librerías
-library(lubridate)
-library(ggplot2)
-library(dplyr)
+library(tidyverse)
+library(janitor)
 library(magrittr)
 
 #############
