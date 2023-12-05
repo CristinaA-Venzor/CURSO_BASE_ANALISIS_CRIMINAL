@@ -28,5 +28,7 @@ flextable(tabla_final) %>% save_as_docx( path = "metadatos_nivel_2.docx")
 
 # Doy formato a la tabla y la genero en mi viewer
 tabla_final<-flextable::flextable(tabla_final)
+
 tabla_final<-width(tabla_final, 2, width = 1)
+
 tabla_final
