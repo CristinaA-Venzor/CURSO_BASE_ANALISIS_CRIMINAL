@@ -2,28 +2,17 @@
 ############## LIMPIEZA DE HORA ###################
 ###################################################
 
-
-
-
 # LIBRERÍAS ---------------------------------------------------------------
 
-#install.packages("stringr")  # Install stringr package
-#install.packages("separate")
-library("stringr") 
-library(readr)
-library("tidyverse")
-library(dplyr)
-library(separate)
-library(lubridate)
-library(anytime)
+#install.packages("tidyverse")
 
+## Activar librerías
+library(tidyverse)
 
 # CARGO BASE DE DATOS -----------------------------------------------------
 
-
-delitos<-read_csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/base_horas.csvv")
+delitos<-read_csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/base_horas.csv")
 View(delitos)
-
 
 # LIMPIEZA DE HORA --------------------------------------------------------
 
@@ -52,7 +41,6 @@ for (i in 1:length(delitos$tiempo_num)) {tiempo_numero <- append(tiempo_numero, 
 #agrego vector con hora a la base de datos
 delitos$tiempo_num <- tiempo_numero
 
-
 # Pongo todas las horas del mismo formato HH:MM:SS
 
 # Defino el número de espacios que contiene mi formato de hora
@@ -72,7 +60,6 @@ for (i in 1:length(delitos$tiempo_num)) {
 
 delitos$tiempo_num <- hms(delitos$tiempo_num)
 
-
 ### si tiene "p.m" se le suman 12 horas para convertir en formato 24hrs
 
 suma <- hms("12:00:00")
@@ -86,7 +73,6 @@ for (i in 1:length(delitos$`Hora del delito`)) {if (grepl("p. m.", delitos$`Hora
 delitos$hora_delito <- tiempo_formato
 # extraigo sólo el valor de las horas
 delitos$hora <- hour(delitos$hora_delito)
-
 
 # guardo archivo resultante -----------------------------------------------
 
