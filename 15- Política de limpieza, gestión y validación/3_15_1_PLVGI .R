@@ -9,9 +9,12 @@ setwd()  # Directorio/Carpeta a utilizar especificado dentro de los parentesis
 
 ## Instalar librerías
 # Quitar el signo de gato y correr, sólo la primera vez que se utilice el paquete en la computadora
-# install.packages("janitor")
+
+#install.packages("tidyverse")
+#install.packages("janitor")
 
 ## Activar librerías
+library(tidyverse)
 library(janitor)
 
 # Desde archivos separados por delimitador (como CSV)
