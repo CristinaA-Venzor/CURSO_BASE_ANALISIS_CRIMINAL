@@ -4,8 +4,8 @@
 
 
 #### Limpieza de direcciones y Georeferenciación de paga - google maps
-## Resultados: 62% de direcciones totales georreferenciadas
-##             64% de direcciones válidas georreferenciadas
+## Resultados: 100% de direcciones totales georreferenciadas
+##             99% de direcciones válidas georreferenciadas
 
 
 #install.packages("readr")
