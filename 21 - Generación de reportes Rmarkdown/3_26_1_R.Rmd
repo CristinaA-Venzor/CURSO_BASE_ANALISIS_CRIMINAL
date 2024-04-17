@@ -96,8 +96,8 @@ delitos$mes <- format(delitos$fecha_hechos,"%b")
 
 #extraigo datos meximos, minimos y totales
 año <- names(which.max(table(delitos$año)))
-max <- max(delitos$fecha_hechos)
-min <-  min(delitos$fecha_hechos)
+max <- sort(delitos$fecha_hechos)[length(delitos$fecha_hechos)-1]
+min <-  sort(delitos$fecha_hechos)[1]
 total <- dim(delitos)
 
 #limpieza automática de nombre de variables
