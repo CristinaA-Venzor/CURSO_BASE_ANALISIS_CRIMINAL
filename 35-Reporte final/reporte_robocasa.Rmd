@@ -1,0 +1,179 @@
+---
+title: "Reporte anual 2020 de incidencia delictiva de Robo a Casa en el municipio de Hermosillo"
+author: "Área de análisis"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(readxl)
+library(readr)
+#install.packages("tmaptools")
+library(tmaptools)
+library(tidyverse)
+library(knitr)
+library(SmartEDA)
+library(janitor)
+library(openxlsx)
+library(chron)
+library(dplyr)
+library("data.table")
+library(tidyr)
+library(tidyverse)
+library(lubridate)
+library("RColorBrewer")
+
+```
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#cargo datos 
+delitos <- read_csv("/Users/cristinaalvarez/SynologyDrive/CONSULTORÍA/NESTOR/CURSO/REPORTE FINAL/georef_robocasa_hermosillo.csv")
+#pongo en formato fecha
+delitos$`FECHA HECHO` <- as.Date(delitos$`FECHA HECHO`, "%YYYY/%MM/%DD")
+#pongo en formato hora
+delitos$`HORA HECHO` <- chron(times=delitos$`HORA HECHO`) 
+#extraigo hora
+delitos <- delitos %>% mutate(hora=hour(strptime(`HORA HECHO`, '%H:%M')) %>% as.character() )
+#extraigo día
+delitos$dia <- format(delitos$`FECHA HECHO`,"%A")
+#extraigo año
+delitos$año <- format(delitos$`FECHA HECHO`,"%Y")
+delitos <- subset(delitos, año == "2020")
+#extraigo mes
+delitos$mes <- format(delitos$`FECHA HECHO`,"%b")
+
+
+año <- names(which.max(table(delitos$año)))
+delito <- "Art.308, IV Robo en casa habitación sin autorización para introducirse"
+max <- max(delitos$`FECHA HECHO`)
+min <-  min(delitos$`FECHA HECHO`)
+total <- dim(delitos)
+
+```
+
+
+El presente reporte describe el comportamiento de `r delito`, en el periodo de `r max` a `r min`, en el que registró `r total[1]` carpetas de investigación. A continuación se grafica el comportamiento anual.
+
+```{r}
+fremes <- t(as.matrix(table(delitos$mes)))
+fremes <- fremes[, c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov" , "Dec")]
+fremes <- as.data.frame(fremes)
+fremes$mes <- c("ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic")
+
+
+
+
+
+my_bar <- barplot(height=fremes$fremes, names.arg =fremes$mes, 
+        col=rgb(0.8,0.1,0.1,0.6),
+        xlab="mes", 
+        ylab="ocurrencias", 
+        main="Robo a casa por mes", las=2)
+
+
+```
+
+# Conentración eapacial
+
+Con base en el análisis georreferenciado de las carpetas de investigación, se han identificado {número de hot spots} zonas que concentran de forma crítica la problemática. Es decir, enfocando los recursos en la atención del delito en estas zonas se obtendría una disminución significativa.
+
+{Tabla con: nombre/número de zona; carpetas de investigación; porcentaje respecto al total}
+
+En el siguiente mapa se pueden identificar las zonas de atención prioritaria en el municipio para el delito de `r delito`.
+
+{mapa de hotpots en el municipio}
+
+A continuación se describe la situación en cada una de las zonas identificadas.
+
+Zona {número}
+
+La zona {número} se integra por las colonias {colonias} cuya principal actividad económica es {tres primeras categorías de unidades económicas de la DENUE}.
+
+
+{mapa de la zona}
+
+```{r}
+#tabla de doble entrada
+table <- xtabs(~ hora+dia, data=delitos)
+#convierto a matriz
+table <- as.matrix(table)
+#ordeno días
+table <- table[, c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")]
+# traduzco días
+colnames(table) <-  c("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo")
+#ordeno hora
+table <- table[c("1","2","3","4","5","6","7","8","10","11","12","13","14","15","16","17","18","19","20" ,"21","22","23","0"), ]
+table <- t(table)
+#quito las 0 horas por error de captura
+table <- table[, 1:22]
+
+dia_max <- names(which.max(rowSums(table)))
+hora_max <- names(which.max(colSums(table)))
+```
+
+
+# Temporalidad
+Respecto la incidencia delictiva en la zona, el día y horario de mayor concentración es `r dia_max` a las `r hora_max`. En la siguiente tabla se describe a detalle la concentración por hora y día del delito.
+
+
+
+```{r}
+
+#Grfico frecuencia
+heatmap(table, Colv = NA, Rowv = NA, col= colorRampPalette(brewer.pal(8, "YlOrRd"))(5), xlab="Hora", main="Frecuencias temporales")
+legend(x="bottomright",cex=0.4, legend=c("0-4", "5-9", "10-14", "15-19", "20-25"),fill=colorRampPalette(brewer.pal(8, "YlOrRd"))(5))
+```
+
+# Perfil de victima
+El perfil de la víctima respecto a su género es:
+
+```{r}
+
+genero <-  as.data.frame(table(delitos$`SEXO VICTIMA`))
+genero$porcentaje <- round((genero$Freq/sum(genero$Freq))*100, 2)
+colnames(genero) <- c("Genero", "Frecuencia", "Porcentaje")
+total_gen <- sum(genero$Frecuencia)
+
+kable(genero, align = 'c')
+
+```
+
+De un total de `r total_gen` registros con género de la víctima identificado
+
+El perfil de la víctima respecto a su edad es:
+
+```{r,fig.align = 'center'}
+edad <-  as.data.frame(table(delitos$`EDAD VICTIMA`))
+edad <- subset(edad, Var1 != "0")
+edad$porcentaje <- round((edad$Freq/sum(edad$Freq))*100, 2)
+colnames(edad) <- c("Edad", "Frecuencia", "Porcentaje")
+total_gen <- sum(edad$Freq)
+
+
+my_bar <- barplot(height=edad$Frecuencia, names=edad$Edad, 
+        col=rgb(0.9,0.5,0.1,0.3),
+        xlab="Edad", 
+        ylab="ocurrencias", 
+        main="Robo a Casa por edad de víctima") 
+```
+
+
+Las 10 ocupaciones con mayor número de víctimas registradas fueron:
+
+```{r, fig.align = 'center'}
+edad <-  as.data.frame(table(delitos$`OCUPACIÓN VICTIMA`))
+edad <- subset(edad, Var1 != "0")
+edad$porcentaje <- round((edad$Freq/sum(edad$Freq))*100, 2)
+colnames(edad) <- c("Ocupación", "Frecuencia", "Porcentaje")
+total_gen <- sum(edad$Freq)
+edad <- edad[order(edad$Frecuencia, decreasing = TRUE),]
+
+kable(edad[1:10, ], row.names=FALSE, align = 'c')
+```
