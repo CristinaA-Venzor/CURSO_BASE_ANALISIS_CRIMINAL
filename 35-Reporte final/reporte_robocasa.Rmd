@@ -34,7 +34,7 @@ library("RColorBrewer")
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 #cargo datos 
-delitos <- read_csv("/Users/cristinaalvarez/SynologyDrive/CONSULTORÍA/NESTOR/CURSO/REPORTE FINAL/georef_robocasa_hermosillo.csv")
+delitos <- read_csv("https://raw.githubusercontent.com/CristinaA-Venzor/CURSO_BASE_ANALISIS_CRIMINAL/main/Bases%20de%20datos/georef_roboviol_hermosillo.csv")
 #pongo en formato fecha
 delitos$`FECHA HECHO` <- as.Date(delitos$`FECHA HECHO`, "%YYYY/%MM/%DD")
 #pongo en formato hora
